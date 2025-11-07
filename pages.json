@@ -1,0 +1,36 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "WellMate",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/chat/chat",
+			"style": {
+				"navigationBarTitleText": "WellMate AI",
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "WellMate AI",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"usingComponents": {
+		  "uni-toast": "@/uni_modules/uni-ui/components/uni-toast/uni-toast.uvue"
+		}
+	},
+	"uniIdRouter": {}
+}

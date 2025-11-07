@@ -1,0 +1,69 @@
+<script lang="uts">
+  // #ifdef APP-ANDROID || APP-HARMONY
+	let firstBackTime = 0
+  // #endif
+	export default {
+		onLaunch: function () {
+			console.log('WellMate AI 应用启动')
+			// 初始化应用数据
+			this.initApp()
+		},
+		onShow: function () {
+			console.log('App Show')
+		},
+		onHide: function () {
+			console.log('App Hide')
+		},
+		// #ifdef APP-ANDROID || APP-HARMONY
+		onLastPageBackPress: function () {
+			console.log('App LastPageBackPress')
+			if (firstBackTime == 0) {
+				uni.showToast({
+					title: '再按一次退出应用',
+					position: 'bottom',
+				})
+				firstBackTime = Date.now()
+				setTimeout(() => {
+					firstBackTime = 0
+				}, 2000)
+			} else if (Date.now() - firstBackTime < 2000) {
+				firstBackTime = Date.now()
+				uni.exit()
+			}
+		},
+		// #endif
+		onExit: function () {
+			console.log('App Exit')
+		},
+		
+		methods: {
+			initApp() {
+				// 检查用户权限
+				this.checkPermissions()
+				// 初始化健康数据同步
+				this.initHealthDataSync()
+			},
+			
+			checkPermissions() {
+				// 检查必要的权限（网络、存储等）
+				console.log('检查应用权限')
+			},
+			
+			initHealthDataSync() {
+				// 初始化健康数据同步设置
+				console.log('初始化健康数据同步')
+			}
+		}
+	}
+</script>
+
+<style>
+	/*每个页面公共css */
+	.uni-row {
+		flex-direction: row;
+	}
+
+	.uni-column {
+		flex-direction: column;
+	}
+</style>

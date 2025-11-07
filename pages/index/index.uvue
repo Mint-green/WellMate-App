@@ -1,0 +1,462 @@
+<template>
+  <view class="container">
+    <!-- 顶部应用名称 -->
+    <view class="app-header">
+      <text class="app-title">WellMate</text>
+    </view>
+    
+    <!-- 健康数据图表区域 -->
+    <view class="chart-section">
+      <text class="section-title">今日健康数据</text>
+      <view class="chart-container">
+        <!-- 小米风格同心双环图表 -->
+        <view class="chart-container">
+          <view class="ring-container">
+            <!-- 外环 - 步数 -->
+            <view class="outer-ring">
+              <view class="ring-bg"></view>
+              <view class="ring-progress" :style="{ transform: 'rotate(' + (stepProgress * 180) + 'deg)' }"></view>
+            </view>
+            <!-- 内环 - 运动量 -->
+            <view class="inner-ring">
+              <view class="ring-bg"></view>
+              <view class="ring-progress" :style="{ transform: 'rotate(' + (exerciseProgress * 180) + 'deg)' }"></view>
+            </view>
+            <!-- 中心数据区域 -->
+            <view class="chart-center">
+              <view class="data-group">
+                <text class="data-value">7,500</text>
+                <text class="data-label">今日步数</text>
+                <text class="data-target">目标 10,000</text>
+                <text class="data-percentage">{{ Math.round(stepProgress * 100) }}%</text>
+              </view>
+              <view class="data-group">
+                <text class="data-value">85%</text>
+                <text class="data-label">运动时长</text>
+                <text class="data-target">目标 100%</text>
+                <text class="data-percentage">{{ Math.round(exerciseProgress * 100) }}%</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 健康指标卡片流 -->
+    <view class="health-cards">
+      <view class="cards-grid">
+        <view class="health-card" @click="showSleepDetail">
+          <view class="card-icon sleep-icon">😴</view>
+          <view class="card-content">
+            <text class="card-value">8.2h</text>
+            <text class="card-label">睡眠时间</text>
+          </view>
+          <view class="card-arrow">›</view>
+        </view>
+        
+        <view class="health-card" @click="showHeartRateDetail">
+          <view class="card-icon heart-icon">❤️</view>
+          <view class="card-content">
+            <text class="card-value">72</text>
+            <text class="card-label">心率</text>
+          </view>
+          <view class="card-arrow">›</view>
+        </view>
+        
+        <view class="health-card" @click="showStepsDetail">
+          <view class="card-icon steps-icon">👣</view>
+          <view class="card-content">
+            <text class="card-value">7,500</text>
+            <text class="card-label">步数</text>
+          </view>
+          <view class="card-arrow">›</view>
+        </view>
+        
+        <view class="health-card" @click="showWeightDetail">
+          <view class="card-icon weight-icon">⚖️</view>
+          <view class="card-content">
+            <text class="card-value">65.2</text>
+            <text class="card-label">体重(kg)</text>
+          </view>
+          <view class="card-arrow">›</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 底部悬浮tab栏 -->
+    <view class="bottom-tab-bar">
+      <view class="tab-item" :class="{ active: currentTab === 'health' }" @click="switchTab('health')">
+        <view class="tab-icon">🏥</view>
+        <text class="tab-text">健康</text>
+      </view>
+      <view class="tab-item" :class="{ active: currentTab === 'chat' }" @click="switchTab('chat')">
+        <view class="tab-icon">💬</view>
+        <text class="tab-text">问AI</text>
+      </view>
+      <view class="tab-item" :class="{ active: currentTab === 'mine' }" @click="switchTab('mine')">
+        <view class="tab-icon">👤</view>
+        <text class="tab-text">我的</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup lang="uts">
+import { ref } from 'vue'
+
+// 当前选中的tab
+const currentTab = ref('health')
+
+// 进度数据
+const stepProgress = ref(0.75) // 7500/10000
+const exerciseProgress = ref(0.85) // 85%
+
+// 切换tab
+const switchTab = (tab: string) => {
+  currentTab.value = tab
+  
+  if (tab === 'chat') {
+    uni.switchTab({
+      url: '/pages/chat/chat'
+    })
+  } else if (tab === 'mine') {
+    uni.switchTab({
+      url: '/pages/mine/mine'
+    })
+  } else if (tab === 'health') {
+    uni.switchTab({
+      url: '/pages/health/health'
+    })
+  }
+}
+
+// 显示睡眠详情
+const showSleepDetail = () => {
+  uni.navigateTo({
+    url: '/pages/sleep/sleep'
+  })
+}
+
+// 显示心率详情
+const showHeartRateDetail = () => {
+  uni.navigateTo({
+    url: '/pages/heartrate/heartrate'
+  })
+}
+
+// 显示步数详情
+const showStepsDetail = () => {
+  uni.navigateTo({
+    url: '/pages/steps/steps'
+  })
+}
+
+// 显示体重详情
+const showWeightDetail = () => {
+  uni.navigateTo({
+    url: '/pages/weight/weight'
+  })
+}
+
+// 页面显示时初始化数据
+onShow(() => {
+  // 模拟数据加载动画
+  setTimeout(() => {
+    stepProgress.value = 0.75
+    exerciseProgress.value = 0.85
+  }, 300)
+})
+</script>
+
+<style scoped>
+.container {
+  padding: 40rpx 30rpx 120rpx 30rpx;
+  background: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 顶部应用名称 */
+.app-header {
+  padding: 40rpx 0 30rpx 0;
+  border-bottom: 1rpx solid #e9ecef;
+  margin-bottom: 40rpx;
+}
+
+.app-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2c3e50;
+  display: block;
+  text-align: left;
+}
+
+/* 图表区域 */
+.chart-section {
+  margin-bottom: 40rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 30rpx;
+  display: block;
+}
+
+.chart-container {
+  padding: 0 40rpx;
+  margin-bottom: 40rpx;
+}
+
+.ring-container {
+  width: 500rpx;
+  height: 250rpx;
+  position: relative;
+  margin: 0 auto;
+}
+
+.outer-ring {
+  position: absolute;
+  width: 500rpx;
+  height: 500rpx;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.outer-ring .ring-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 16rpx solid #f5f5f5;
+  border-bottom: none;
+  border-radius: 250rpx 250rpx 0 0;
+  box-sizing: border-box;
+}
+
+.outer-ring .ring-progress {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 16rpx solid transparent;
+  border-top: 16rpx solid #3498db;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transform-origin: center;
+  transition: transform 0.5s ease;
+}
+
+.inner-ring .ring-progress {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 14rpx solid transparent;
+  border-top: 14rpx solid #e74c3c;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transform-origin: center;
+  transition: transform 0.5s ease;
+}
+
+.inner-ring {
+  position: absolute;
+  width: 360rpx;
+  height: 360rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  top: 70rpx;
+  left: 70rpx;
+}
+
+.inner-ring .ring-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 14rpx solid #f5f5f5;
+  border-bottom: none;
+  border-radius: 180rpx 180rpx 0 0;
+  box-sizing: border-box;
+}
+
+.inner-ring .ring-progress {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 14rpx solid transparent;
+  border-top: 14rpx solid #e74c3c;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transform-origin: center;
+  transition: transform 0.5s ease;
+}
+
+.chart-center {
+  position: absolute;
+  top: 125rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  z-index: 10;
+}
+
+.data-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 16rpx 24rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.data-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2c3e50;
+  display: block;
+  line-height: 1.2;
+}
+
+.data-label {
+  font-size: 22rpx;
+  color: #7f8c8d;
+  display: block;
+  margin-bottom: 4rpx;
+  line-height: 1.2;
+}
+
+.data-target {
+  font-size: 18rpx;
+  color: #95a5a6;
+  display: block;
+  margin-bottom: 6rpx;
+  line-height: 1.2;
+}
+
+.data-percentage {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #3498db;
+  display: block;
+  margin-top: 4rpx;
+  line-height: 1.2;
+}
+
+.data-group:last-child .data-percentage {
+  color: #e74c3c;
+}
+
+/* 健康卡片流 */
+.health-cards {
+  flex: 1;
+  margin-top: 40rpx;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  padding: 0 20rpx;
+}
+
+.health-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 30rpx 25rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.health-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+  width: 60rpx;
+  text-align: center;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.card-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #2c3e50;
+  display: block;
+  line-height: 1.2;
+}
+
+.card-label {
+  font-size: 24rpx;
+  color: #7f8c8d;
+  display: block;
+  margin-top: 4rpx;
+}
+
+.card-arrow {
+  font-size: 32rpx;
+  color: #bdc3c7;
+  font-weight: bold;
+}
+
+/* 底部悬浮tab栏 */
+  .bottom-tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: white;
+    display: flex;
+    height: 100rpx;
+    border-top: 1rpx solid #e9ecef;
+    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15rpx 0;
+    transition: all 0.3s ease;
+  }
+
+  .tab-item.active {
+    color: #3498db;
+  }
+  
+  .tab-item.active .tab-icon {
+    color: #3498db;
+  }
+  
+  .tab-item.active .tab-text {
+    color: #3498db;
+  }
+  
+  .tab-icon {
+    font-size: 36rpx;
+    margin-bottom: 8rpx;
+    color: #95a5a6;
+  }
+  
+  .tab-text {
+    font-size: 22rpx;
+    color: #95a5a6;
+  }
+</style>

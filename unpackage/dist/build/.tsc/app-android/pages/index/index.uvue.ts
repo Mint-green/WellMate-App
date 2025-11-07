@@ -1,0 +1,83 @@
+
+const __sfc__ = defineComponent({
+  __name: 'index',
+  setup(__props) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
+const _cache = __ins.renderCache;
+
+// 按钮点击事件处理
+const handleStartJourney = () => {
+  uni.showToast({
+    title: '健康之旅已开始！',
+    icon: 'success',
+    duration: 2000
+  })
+}
+
+const handleShowTips = () => {
+  uni.showModal({
+    title: '健康小贴士',
+    content: '每天保持适量运动，均衡饮食，充足睡眠是保持健康的关键。建议每天步行8000步以上，饮用2升水。',
+    showCancel: false,
+    confirmText: '知道了'
+  })
+}
+
+const handleSettings = () => {
+  uni.showToast({
+    title: '设置功能开发中',
+    icon: 'none',
+    duration: 1500
+  })
+}
+
+return (): any | null => {
+
+  return _cE("view", _uM({ class: "container" }), [
+    _cE("text", _uM({ class: "app-title" }), "WellMate 健康助手"),
+    _cE("view", _uM({ class: "welcome-section" }), [
+      _cE("text", _uM({ class: "welcome-text" }), "欢迎使用 WellMate"),
+      _cE("text", _uM({ class: "subtitle" }), "您的个人健康管理专家")
+    ]),
+    _cE("view", _uM({ class: "card" }), [
+      _cE("text", _uM({ class: "card-title" }), "今日健康数据"),
+      _cE("view", _uM({ class: "stats-row" }), [
+        _cE("view", _uM({ class: "stat-item" }), [
+          _cE("text", _uM({ class: "stat-value" }), "7,500"),
+          _cE("text", _uM({ class: "stat-label" }), "步数")
+        ]),
+        _cE("view", _uM({ class: "stat-item" }), [
+          _cE("text", _uM({ class: "stat-value" }), "8"),
+          _cE("text", _uM({ class: "stat-label" }), "小时睡眠")
+        ]),
+        _cE("view", _uM({ class: "stat-item" }), [
+          _cE("text", _uM({ class: "stat-value" }), "2.5"),
+          _cE("text", _uM({ class: "stat-label" }), "L 饮水")
+        ])
+      ])
+    ]),
+    _cE("view", _uM({ class: "button-section" }), [
+      _cE("button", _uM({
+        class: "primary-btn",
+        onClick: handleStartJourney
+      }), "开始健康之旅"),
+      _cE("button", _uM({
+        class: "secondary-btn",
+        onClick: handleShowTips
+      }), "健康小贴士"),
+      _cE("button", _uM({
+        class: "outline-btn",
+        onClick: handleSettings
+      }), "应用设置")
+    ]),
+    _cE("view", _uM({ class: "footer" }), [
+      _cE("text", _uM({ class: "footer-text" }), "版本 1.0.0 | 数据更新于今天")
+    ])
+  ])
+}
+}
+
+})
+export default __sfc__
+const GenPagesIndexIndexStyles = [_uM([["container", _pS(_uM([["paddingTop", "30rpx"], ["paddingRight", "30rpx"], ["paddingBottom", "30rpx"], ["paddingLeft", "30rpx"], ["backgroundImage", "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"], ["backgroundColor", "rgba(0,0,0,0)"], ["display", "flex"], ["flexDirection", "column"]]))], ["app-title", _pS(_uM([["fontSize", "48rpx"], ["fontWeight", "bold"], ["color", "#ffffff"], ["textAlign", "center"], ["marginTop", "60rpx"], ["marginBottom", "40rpx"]]))], ["welcome-section", _pS(_uM([["textAlign", "center"], ["marginBottom", "50rpx"]]))], ["welcome-text", _pS(_uM([["fontSize", "36rpx"], ["color", "#ffffff"], ["marginBottom", "10rpx"]]))], ["subtitle", _pS(_uM([["fontSize", "28rpx"], ["color", "rgba(255,255,255,0.8)"]]))], ["card", _pS(_uM([["backgroundImage", "none"], ["backgroundColor", "rgba(255,255,255,0.95)"], ["borderTopLeftRadius", "20rpx"], ["borderTopRightRadius", "20rpx"], ["borderBottomRightRadius", "20rpx"], ["borderBottomLeftRadius", "20rpx"], ["paddingTop", "40rpx"], ["paddingRight", "40rpx"], ["paddingBottom", "40rpx"], ["paddingLeft", "40rpx"], ["marginBottom", "40rpx"], ["boxShadow", "0 10rpx 30rpx rgba(0, 0, 0, 0.1)"]]))], ["card-title", _pS(_uM([["fontSize", "32rpx"], ["fontWeight", "bold"], ["color", "#333333"], ["textAlign", "center"], ["marginBottom", "30rpx"]]))], ["stats-row", _pS(_uM([["display", "flex"], ["justifyContent", "space-around"]]))], ["stat-item", _pS(_uM([["textAlign", "center"]]))], ["stat-value", _pS(_uM([["fontSize", "36rpx"], ["fontWeight", "bold"], ["color", "#667eea"]]))], ["stat-label", _pS(_uM([["fontSize", "24rpx"], ["color", "#666666"], ["marginTop", "8rpx"]]))], ["button-section", _pS(_uM([["display", "flex"], ["flexDirection", "column"], ["gap", "20rpx"], ["marginBottom", "40rpx"]]))], ["primary-btn", _pS(_uM([["backgroundImage", "none"], ["backgroundColor", "#4CAF50"], ["color", "#FFFFFF"], ["borderTopWidth", "medium"], ["borderRightWidth", "medium"], ["borderBottomWidth", "medium"], ["borderLeftWidth", "medium"], ["borderTopStyle", "none"], ["borderRightStyle", "none"], ["borderBottomStyle", "none"], ["borderLeftStyle", "none"], ["borderTopColor", "#000000"], ["borderRightColor", "#000000"], ["borderBottomColor", "#000000"], ["borderLeftColor", "#000000"], ["borderTopLeftRadius", "50rpx"], ["borderTopRightRadius", "50rpx"], ["borderBottomRightRadius", "50rpx"], ["borderBottomLeftRadius", "50rpx"], ["paddingTop", "24rpx"], ["paddingRight", "24rpx"], ["paddingBottom", "24rpx"], ["paddingLeft", "24rpx"], ["fontSize", "32rpx"]]))], ["secondary-btn", _pS(_uM([["backgroundImage", "none"], ["backgroundColor", "#2196F3"], ["color", "#FFFFFF"], ["borderTopWidth", "medium"], ["borderRightWidth", "medium"], ["borderBottomWidth", "medium"], ["borderLeftWidth", "medium"], ["borderTopStyle", "none"], ["borderRightStyle", "none"], ["borderBottomStyle", "none"], ["borderLeftStyle", "none"], ["borderTopColor", "#000000"], ["borderRightColor", "#000000"], ["borderBottomColor", "#000000"], ["borderLeftColor", "#000000"], ["borderTopLeftRadius", "50rpx"], ["borderTopRightRadius", "50rpx"], ["borderBottomRightRadius", "50rpx"], ["borderBottomLeftRadius", "50rpx"], ["paddingTop", "24rpx"], ["paddingRight", "24rpx"], ["paddingBottom", "24rpx"], ["paddingLeft", "24rpx"], ["fontSize", "32rpx"]]))], ["outline-btn", _pS(_uM([["backgroundImage", "none"], ["backgroundColor", "rgba(0,0,0,0)"], ["color", "#FFFFFF"], ["borderTopWidth", "2rpx"], ["borderRightWidth", "2rpx"], ["borderBottomWidth", "2rpx"], ["borderLeftWidth", "2rpx"], ["borderTopStyle", "solid"], ["borderRightStyle", "solid"], ["borderBottomStyle", "solid"], ["borderLeftStyle", "solid"], ["borderTopColor", "#FFFFFF"], ["borderRightColor", "#FFFFFF"], ["borderBottomColor", "#FFFFFF"], ["borderLeftColor", "#FFFFFF"], ["borderTopLeftRadius", "50rpx"], ["borderTopRightRadius", "50rpx"], ["borderBottomRightRadius", "50rpx"], ["borderBottomLeftRadius", "50rpx"], ["paddingTop", "24rpx"], ["paddingRight", "24rpx"], ["paddingBottom", "24rpx"], ["paddingLeft", "24rpx"], ["fontSize", "32rpx"]]))], ["footer", _pS(_uM([["textAlign", "center"], ["marginTop", "auto"], ["paddingTop", "40rpx"]]))], ["footer-text", _pS(_uM([["fontSize", "24rpx"], ["color", "rgba(255,255,255,0.6)"]]))]])]

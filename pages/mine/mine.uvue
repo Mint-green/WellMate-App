@@ -1,0 +1,408 @@
+<template>
+  <view class="container">
+    <!-- 顶部用户信息 -->
+    <view class="user-header">
+      <view class="user-avatar">
+        <text class="avatar-icon">👤</text>
+      </view>
+      <view class="user-info">
+        <text class="user-name">{{ userInfo.nickname }}</text>
+        <text class="user-id">ID: {{ userInfo.userId }}</text>
+      </view>
+    </view>
+
+    <!-- 个人信息卡片 -->
+    <view class="info-section">
+      <text class="section-title">个人信息</text>
+      <view class="info-list">
+        <view class="info-item" @click="editGender">
+          <view class="info-left">
+            <text class="info-icon">🚻</text>
+            <text class="info-label">性别</text>
+          </view>
+          <view class="info-right">
+            <text class="info-value">{{ userInfo.gender }}</text>
+            <text class="info-arrow">></text>
+          </view>
+        </view>
+        
+        <view class="info-item" @click="editBirthday">
+          <view class="info-left">
+            <text class="info-icon">🎂</text>
+            <text class="info-label">生日</text>
+          </view>
+          <view class="info-right">
+            <text class="info-value">{{ userInfo.birthday }}</text>
+            <text class="info-arrow">></text>
+          </view>
+        </view>
+        
+        <view class="info-item">
+          <view class="info-left">
+            <text class="info-icon">📱</text>
+            <text class="info-label">手机号</text>
+          </view>
+          <view class="info-right">
+            <text class="info-value">{{ userInfo.phone }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 设置选项 -->
+    <view class="settings-section">
+      <text class="section-title">设置</text>
+      <view class="settings-list">
+        <view class="settings-item" @click="showAbout">
+          <view class="settings-left">
+            <text class="settings-icon">ℹ️</text>
+            <text class="settings-label">关于我们</text>
+          </view>
+          <text class="settings-arrow">></text>
+        </view>
+        
+        <view class="settings-item" @click="showFeedback">
+          <view class="settings-left">
+            <text class="settings-icon">💬</text>
+            <text class="settings-label">意见反馈</text>
+          </view>
+          <text class="settings-arrow">></text>
+        </view>
+        
+        <view class="settings-item" @click="logout">
+          <view class="settings-left">
+            <text class="settings-icon">🚪</text>
+            <text class="settings-label">退出登录</text>
+          </view>
+          <text class="settings-arrow">></text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部tab栏 -->
+    <view class="bottom-tab-bar">
+      <view class="tab-item" :class="{ active: currentTab === 'health' }" @click="switchTab('health')">
+        <text class="tab-icon">🏥</text>
+        <text class="tab-text">健康</text>
+      </view>
+      <view class="tab-item" :class="{ active: currentTab === 'chat' }" @click="switchTab('chat')">
+        <text class="tab-icon">💬</text>
+        <text class="tab-text">问AI</text>
+      </view>
+      <view class="tab-item" :class="{ active: currentTab === 'mine' }" @click="switchTab('mine')">
+        <text class="tab-icon">👤</text>
+        <text class="tab-text">我的</text>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+// 当前选中的tab
+const currentTab = ref('mine')
+
+// 用户信息
+const userInfo = ref({
+  nickname: '健康用户',
+  userId: '12345678',
+  gender: '男',
+  birthday: '1990-01-01',
+  phone: '138****8888'
+})
+
+// 切换tab
+const switchTab = (tab) => {
+  currentTab.value = tab
+  if (tab === 'health') {
+    uni.redirectTo({
+      url: '/pages/index/index'
+    })
+  } else if (tab === 'chat') {
+    uni.redirectTo({
+      url: '/pages/chat/chat'
+    })
+  }
+}
+
+// 编辑性别
+const editGender = () => {
+  uni.showActionSheet({
+    itemList: ['男', '女'],
+    success: (res) => {
+      userInfo.value.gender = res.tapIndex === 0 ? '男' : '女'
+    }
+  })
+}
+
+// 编辑生日
+const editBirthday = () => {
+  uni.showDatePicker({
+    currentDate: userInfo.value.birthday,
+    success: (res) => {
+      const date = new Date(res.year, res.month - 1, res.day)
+      userInfo.value.birthday = date.toISOString().split('T')[0]
+    }
+  })
+}
+
+// 显示关于我们
+const showAbout = () => {
+  uni.showModal({
+    title: '关于我们',
+    content: 'WellMate健康助手\n版本：1.0.0\n致力于您的健康生活',
+    showCancel: false
+  })
+}
+
+// 显示意见反馈
+const showFeedback = () => {
+  uni.showModal({
+    title: '意见反馈',
+    content: '如有任何建议或问题，请联系我们：\n邮箱：feedback@wellmate.com',
+    showCancel: false
+  })
+}
+
+// 退出登录
+const logout = () => {
+  uni.showModal({
+    title: '确认退出',
+    content: '确定要退出登录吗？',
+    success: (res) => {
+      if (res.confirm) {
+        uni.showToast({
+          title: '已退出登录',
+          icon: 'success'
+        })
+        // 实际应用中这里应该清除登录状态并跳转到登录页
+      }
+    }
+  })
+}
+</script>
+
+<style scoped>
+.container {
+  padding: 40rpx 30rpx 120rpx 30rpx;
+  background: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 顶部用户信息 */
+.user-header {
+  display: flex;
+  align-items: center;
+  padding: 40rpx 0;
+  border-bottom: 1rpx solid #e9ecef;
+  margin-bottom: 40rpx;
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 30rpx;
+}
+
+.avatar-icon {
+  font-size: 60rpx;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2c3e50;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.user-id {
+  font-size: 28rpx;
+  color: #7f8c8d;
+  display: block;
+}
+
+/* 个人信息区域 */
+.info-section {
+  margin-bottom: 40rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 30rpx;
+  display: block;
+}
+
+.info-list {
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 25rpx;
+  border-bottom: 1rpx solid #f1f2f6;
+  transition: all 0.3s ease;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item:active {
+  background: #f8f9fa;
+}
+
+.info-left {
+  display: flex;
+  align-items: center;
+}
+
+.info-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.info-label {
+  font-size: 32rpx;
+  color: #2c3e50;
+}
+
+.info-right {
+  display: flex;
+  align-items: center;
+}
+
+.info-value {
+  font-size: 32rpx;
+  color: #7f8c8d;
+  margin-right: 15rpx;
+}
+
+.info-arrow {
+  font-size: 28rpx;
+  color: #bdc3c7;
+  font-weight: bold;
+}
+
+/* 设置区域 */
+.settings-section {
+  margin-bottom: 40rpx;
+}
+
+.settings-list {
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 25rpx;
+  border-bottom: 1rpx solid #f1f2f6;
+  transition: all 0.3s ease;
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-item:active {
+  background: #f8f9fa;
+}
+
+.settings-left {
+  display: flex;
+  align-items: center;
+}
+
+.settings-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.settings-label {
+  font-size: 32rpx;
+  color: #2c3e50;
+}
+
+.settings-arrow {
+  font-size: 28rpx;
+  color: #bdc3c7;
+  font-weight: bold;
+}
+
+/* 底部悬浮tab栏 */
+.bottom-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  height: 100rpx;
+  border-top: 1rpx solid #e9ecef;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15rpx 0;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  color: #3498db;
+}
+
+.tab-item.active .tab-icon {
+  color: #3498db;
+}
+
+.tab-item.active .tab-text {
+  color: #3498db;
+}
+
+.tab-icon {
+  font-size: 36rpx;
+  margin-bottom: 8rpx;
+  color: #95a5a6;
+}
+
+.tab-text {
+  font-size: 22rpx;
+  color: #95a5a6;
+}
+</style>

@@ -16,44 +16,44 @@
     </view>
 
     <!-- 基本信息标题 -->
-    <text class="app-title">基本信息</text>
+    <text class="app-title">{{ $t('basic_info') }}</text>
 
     <!-- 基本信息卡片 -->
     <view class="info-section">
       <view class="info-list">
         <view class="info-item" @click="editGender">
           <text class="info-icon">🚻</text>
-          <text class="info-label">性别</text>
-          <text class="info-value gender-value">{{ userInfo.gender }}</text>
+          <text class="info-label">{{ $t('gender') }}</text>
+          <text class="info-value gender-value">{{ userInfo.gender === '未知' ? $t('unknown') : (userInfo.gender === '男' ? $t('male') : $t('female')) }}</text>
         </view>
         <view class="info-item" @click="editBirthday">
           <text class="info-icon">📅</text>
-          <text class="info-label">出生日期</text>
+          <text class="info-label">{{ $t('birthday') }}</text>
           <text class="info-value">{{ userInfo.birthday }}</text>
         </view>
         <view class="info-item" @click="editAge">
           <text class="info-icon">🔢</text>
-          <text class="info-label">年龄</text>
+          <text class="info-label">{{ $t('age') }}</text>
           <text class="info-value">{{ userInfo.age }}</text>
         </view>
         <view class="info-item" @click="editHeight">
           <text class="info-icon">📏</text>
-          <text class="info-label">身高</text>
-          <text class="info-value height-value">{{ userInfo.height }}厘米</text>
+          <text class="info-label">{{ $t('height') }}</text>
+          <text class="info-value height-value">{{ userInfo.height }}{{ $t('cm') }}</text>
         </view>
         <view class="info-item" @click="editWeight">
           <text class="info-icon">⚖️</text>
-          <text class="info-label">体重</text>
-          <text class="info-value">{{ userInfo.weight }}千克</text>
+          <text class="info-label">{{ $t('weight') }}</text>
+          <text class="info-value">{{ userInfo.weight }}{{ $t('kg') }}</text>
         </view>
         <view class="info-item" @click="editBMI">
           <text class="info-icon">📊</text>
-          <text class="info-label">BMI</text>
+          <text class="info-label">{{ $t('bmi') }}</text>
           <text class="info-value bmi-value">{{ userInfo.bmi }}</text>
         </view>
         <view class="info-item" @click="editBodyFat">
           <text class="info-icon">📈</text>
-          <text class="info-label">体脂率</text>
+          <text class="info-label">{{ $t('fat_rate') }}</text>
           <text class="info-value fat-rate-value">{{ userInfo.fatRate }}%</text>
         </view>
       </view>
@@ -64,7 +64,7 @@
       <view class="info-list">
         <view class="info-item" @click="navigateToSettings">
           <text class="info-icon">⚙️</text>
-          <text class="info-label">设置</text>
+          <text class="info-label">{{ $t('settings') }}</text>
           <text class="info-value info-arrow">›</text>
         </view>
       </view>
@@ -74,19 +74,19 @@
     <view class="bottom-nav">
       <view class="nav-item" @click="navigateToPage('/pages/index/index')">
         <text class="nav-icon">📊</text>
-        <text class="nav-text">总览</text>
+        <text class="nav-text">{{ $t('common.home') }}</text>
       </view>
       <view class="nav-item" @click="navigateToPage('/pages/physical/physical')">
         <text class="nav-icon">🩺</text>
-        <text class="nav-text">健康助手</text>
+        <text class="nav-text">{{ $t('common.health') }}</text>
       </view>
       <view class="nav-item" @click="navigateToPage('/pages/mental/mental')">
         <text class="nav-icon">🧠</text>
-        <text class="nav-text">心灵树洞</text>
+        <text class="nav-text">{{ $t('common.mental') }}</text>
       </view>
       <view class="nav-item active" @click="navigateToPage('/pages/mine/mine')">
         <text class="nav-icon">👤</text>
-        <text class="nav-text">我的</text>
+        <text class="nav-text">{{ $t('common.mine') }}</text>
       </view>
     </view>
 
@@ -135,13 +135,13 @@ const uploadAvatar = () => {
       // 然后将服务器返回的图片URL保存到userInfo中
       console.log('选择的头像图片路径:', tempFilePath)
       uni.showToast({
-        title: '头像上传成功',
+        title: $t('avatar_upload_success'),
         icon: 'success'
       })
     },
     fail: () => {
       uni.showToast({
-        title: '头像选择失败',
+        title: $t('avatar_select_fail'),
         icon: 'none'
       })
     }
@@ -151,9 +151,9 @@ const uploadAvatar = () => {
   // 编辑用户名
 const editNickname = () => {
   uni.showModal({
-    title: '编辑用户名',
+    title: $t('edit_nickname'),
     editable: true,
-    placeholderText: '请输入用户名',
+    placeholderText: $t('enter_nickname'),
     value: userInfo.value.nickname,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -166,9 +166,9 @@ const editNickname = () => {
 // 编辑BMI
 const editBMI = () => {
   uni.showModal({
-    title: '编辑BMI',
+    title: $t('edit_bmi'),
     editable: true,
-    placeholderText: '请输入BMI',
+    placeholderText: $t('enter_bmi'),
     value: userInfo.value.bmi,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -177,7 +177,7 @@ const editBMI = () => {
           userInfo.value.bmi = parseFloat(res.content).toFixed(1)
         } else {
           uni.showToast({
-            title: '请输入有效的数字',
+            title: $t('valid_number'),
             icon: 'none'
           })
         }
@@ -189,9 +189,9 @@ const editBMI = () => {
 // 编辑体脂率
 const editBodyFat = () => {
   uni.showModal({
-    title: '编辑体脂率',
+    title: $t('edit_fat_rate'),
     editable: true,
-    placeholderText: '请输入体脂率（%）',
+    placeholderText: $t('enter_fat_rate'),
     value: userInfo.value.fatRate,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -200,7 +200,7 @@ const editBodyFat = () => {
           userInfo.value.fatRate = parseFloat(res.content).toFixed(1)
         } else {
           uni.showToast({
-            title: '请输入有效的数字',
+            title: $t('valid_number'),
             icon: 'none'
           })
         }
@@ -215,9 +215,9 @@ initDate()
 // 编辑性别
 const editGender = () => {
   uni.showActionSheet({
-    itemList: ['男', '女'],
+    itemList: [$t('male'), $t('female')],
     success: (res) => {
-      userInfo.value.gender = res.tapIndex === 0 ? '男' : '女'
+      userInfo.value.gender = res.tapIndex === 0 ? $t('male') : $t('female')
     }
   })
 }
@@ -280,7 +280,7 @@ const editBirthday = () => {
   const selectYear = () => {
     const years = getYears()
     uni.showActionSheet({
-      title: '选择年份',
+      title: $t('select_year'),
       itemList: years,
       success: (res) => {
         selectedYear = parseInt(years[res.tapIndex])
@@ -293,7 +293,7 @@ const editBirthday = () => {
   const selectMonth = () => {
     const months = getMonths()
     uni.showActionSheet({
-      title: '选择月份',
+      title: $t('select_month'),
       itemList: months,
       success: (res) => {
         selectedMonth = parseInt(months[res.tapIndex])
@@ -306,7 +306,7 @@ const editBirthday = () => {
   const selectDay = () => {
     const days = getDays(selectedYear, selectedMonth)
     uni.showActionSheet({
-      title: '选择日期',
+      title: $t('select_day'),
       itemList: days,
       success: (res) => {
         selectedDay = parseInt(days[res.tapIndex])
@@ -335,9 +335,9 @@ const editBirthday = () => {
 // 编辑身高
 const editHeight = () => {
   uni.showModal({
-    title: '编辑身高',
+    title: $t('edit_height'),
     editable: true,
-    placeholderText: '请输入身高（厘米）',
+    placeholderText: $t('enter_height'),
     value: userInfo.value.height,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -346,7 +346,7 @@ const editHeight = () => {
           userInfo.value.height = parseFloat(res.content).toFixed(1)
         } else {
           uni.showToast({
-            title: '请输入有效的数字',
+            title: $t('valid_number'),
             icon: 'none'
           })
         }
@@ -358,9 +358,9 @@ const editHeight = () => {
 // 编辑体重
 const editWeight = () => {
   uni.showModal({
-    title: '编辑体重',
+    title: $t('edit_weight'),
     editable: true,
-    placeholderText: '请输入体重（千克）',
+    placeholderText: $t('enter_weight'),
     value: userInfo.value.weight,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -369,7 +369,7 @@ const editWeight = () => {
           userInfo.value.weight = parseFloat(res.content).toFixed(1)
         } else {
           uni.showToast({
-            title: '请输入有效的数字',
+            title: $t('valid_number'),
             icon: 'none'
           })
         }

@@ -5,7 +5,7 @@
         <text class="back-icon">‹</text>
       </view>
       <view class="header-center">
-        <text class="header-title">设置</text>
+        <text class="header-title">{{ $t('common.settings') }}</text>
       </view>
     </view>
     
@@ -14,9 +14,9 @@
       <view class="setting-group">
         <view class="setting-item language-setting" @click="showLanguageOptions">
           <text class="setting-icon">🌐</text>
-          <text class="setting-label">语言设置</text>
+          <text class="setting-label">{{ $t('language') }}</text>
           <view class="language-input-container">
-            <text class="language-value">{{ currentLanguage || '选择语言...' }}</text>
+            <text class="language-value">{{ currentLanguage || $t('language_options_english') }}</text>
           </view>
         </view>
       </view>
@@ -25,10 +25,10 @@
       
       <!-- 健康监测 -->
       <view class="setting-group">
-        <text class="group-title">健康监测</text>
+        <text class="group-title">{{ $t('notifications') }}</text>
         <view class="setting-item">
           <text class="setting-icon">🔔</text>
-          <text class="setting-label">通知管理</text>
+          <text class="setting-label">{{ $t('notifications') }}</text>
           <view class="setting-right">
             <switch :checked="showNotifications" @change="onNotificationsSwitchChange" color="#007AFF"></switch>
           </view>
@@ -36,7 +36,7 @@
         
         <view class="setting-item">
           <text class="setting-icon">💆</text>
-          <text class="setting-label">压力管理</text>
+          <text class="setting-label">{{ $t('stress_management') }}</text>
           <view class="setting-right">
             <switch :checked="showStress" @change="onStressSwitchChange" color="#007AFF"></switch>
           </view>
@@ -44,7 +44,7 @@
         
         <view class="setting-item">
           <text class="setting-icon">⚠️</text>
-          <text class="setting-label">身体预警</text>
+          <text class="setting-label">{{ $t('body_alert') }}</text>
           <view class="setting-right">
             <switch :checked="showBodyAlert" @change="onBodyAlertSwitchChange" color="#007AFF"></switch>
           </view>
@@ -54,8 +54,8 @@
       <!-- 其他设置 -->
       <view class="setting-group">
         <view class="setting-item">
-          <text class="setting-icon">ℹ️</text>
-          <text class="setting-label">关于我们</text>
+          <text class="setting-icon">📖</text>
+          <text class="setting-label">{{ $t('about_us') }}</text>
           <view class="setting-right">
             <text class="arrow-icon">›</text>
           </view>
@@ -63,23 +63,23 @@
         
         <view class="setting-item">
           <text class="setting-icon">🔒</text>
-          <text class="setting-label">隐私政策</text>
+          <text class="setting-label">{{ $t('privacy_policy') }}</text>
           <view class="setting-right">
             <text class="arrow-icon">›</text>
           </view>
         </view>
         
         <view class="setting-item">
-          <text class="setting-icon">📝</text>
-          <text class="setting-label">用户协议</text>
+          <text class="setting-icon">📄</text>
+          <text class="setting-label">{{ $t('terms_of_service') }}</text>
           <view class="setting-right">
             <text class="arrow-icon">›</text>
           </view>
         </view>
         
         <view class="setting-item">
-          <text class="setting-icon">📌</text>
-          <text class="setting-label">版本号</text>
+          <text class="setting-icon">📱</text>
+          <text class="setting-label">{{ $t('version') }}</text>
           <view class="setting-right">
             <text class="setting-value">1.0.0</text>
           </view>
@@ -87,7 +87,7 @@
         
         <view class="setting-item logout-item" @click="logout">
           <text class="setting-icon logout-icon">🚪</text>
-          <text class="setting-label logout-label">退出登录</text>
+          <text class="setting-label logout-label">{{ $t('common.logout') }}</text>
         </view>
       </view>
     </view>
@@ -96,12 +96,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+// 导入国际化工具
+import { switchLanguage, getCurrentLanguage, getLanguageDisplayName, getSupportedLanguages, t } from '@/utils/i18n/i18n.uts'
 
 // 当前语言设置
-const currentLanguage = ref('简体中文')
-
-
+const currentLanguage = ref(getLanguageDisplayName(getCurrentLanguage()))
 
 // 健康监测设置
 const showNotifications = ref(true)
@@ -117,14 +117,33 @@ const goBack = () => {
 
 // 显示语言选项
 const showLanguageOptions = () => {
+  // 获取支持的语言列表
+  const languages = getSupportedLanguages()
+  const languageNames = languages.map(lang => lang.name)
+  
   uni.showActionSheet({
-    itemList: ['简体中文', 'English', '日本語'],
+    itemList: languageNames,
     success: (res) => {
-      const languages = ['简体中文', 'English', '日本語']
-      currentLanguage.value = languages[res.tapIndex]
+      const selectedLang = languages[res.tapIndex].code
+      
+      // 切换语言
+      switchLanguage(selectedLang)
+      
+      // 更新当前显示的语言名称
+      currentLanguage.value = getLanguageDisplayName(selectedLang)
+      
+      // 重新加载页面以应用语言更改
+      uni.reLaunch({
+        url: '/pages/mine/mine'
+      })
     }
   })
 }
+
+// 页面加载时初始化当前语言
+onMounted(() => {
+  currentLanguage.value = getLanguageDisplayName(getCurrentLanguage())
+})
 
 // 开关变化处理
 const onSwitchChange = (e) => {
@@ -151,8 +170,10 @@ const onBodyAlertSwitchChange = (e) => {
 // 退出登录
 const logout = () => {
   uni.showModal({
-    title: '退出登录',
-    content: '确定要退出登录吗？',
+    title: t('logout_confirm_title'),
+    content: t('logout_confirm_content'),
+    cancelText: t('common.cancel'),
+    confirmText: t('common.confirm'),
     success: (res) => {
       if (res.confirm) {
         // 清除登录状态
@@ -184,7 +205,7 @@ const logout = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60rpx 30rpx 40rpx 30rpx;
+  padding: 60rpx 30rpx 30rpx 30rpx;
   width: 100%;
   box-sizing: border-box;
   position: relative;
@@ -193,7 +214,7 @@ const logout = () => {
 .header-left {
   position: absolute;
   left: 60rpx;
-  top: 50rpx;
+  top: 60rpx;
 }
 
 .header-center {
@@ -205,17 +226,19 @@ const logout = () => {
   font-size: 48rpx;
   color: $uni-text-color;
   display: inline-block;
+  line-height: 1;
 }
 
 .header-title {
   font-size: 36rpx;
   font-weight: 600;
   color: $uni-text-color;
+  line-height: 1.5;
 }
 
 /* 设置内容 */
 .settings-content {
-  padding: 0 30rpx 120rpx 30rpx;
+  padding: 60rpx 30rpx 120rpx 30rpx;
 }
 
 .setting-group {
@@ -239,12 +262,13 @@ const logout = () => {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  padding: 40rpx 30rpx;
+  padding: 35rpx 30rpx;
   border-bottom: 1rpx solid $uni-border-color;
   transition: all 0.3s ease;
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
+  line-height: 1.5;
 }
 
 .setting-item:last-child {
@@ -267,8 +291,10 @@ const logout = () => {
   font-size: 32rpx;
   color: $uni-text-color;
   flex-shrink: 0;
-  width: 160rpx;
+  min-width: 160rpx;
+  max-width: 300rpx;
   white-space: nowrap;
+  overflow: visible;
 }
 
 .setting-subtext {
@@ -306,7 +332,8 @@ const logout = () => {
   border-radius: 35rpx;
   padding: 20rpx 30rpx;
   margin-left: auto;
-  min-width: 200rpx;
+  min-width: 250rpx;
+  max-width: 350rpx;
   box-sizing: border-box;
 }
 
@@ -337,6 +364,8 @@ const logout = () => {
 
 .logout-label {
   color: $uni-color-error;
+  font-size: 32rpx;
+  white-space: nowrap;
 }
 
 /* 开关样式 */

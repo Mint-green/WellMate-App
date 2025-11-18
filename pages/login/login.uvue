@@ -3,28 +3,28 @@
     <view class="login-header">
       <image class="logo" src="/static/logo_noname.png" mode="aspectFit"></image>
       <text class="app-name">WellMate</text>
-      <text class="slogan">您的健康管理助手</text>
+      <text class="slogan">{{ $t('app.slogan') }}</text>
     </view>
     
     <view class="login-form">
       <view class="form-group">
-        <text class="form-label">用户名</text>
+        <text class="form-label">{{ $t('username') }}</text>
         <input 
           class="form-input" 
           type="text" 
           v-model="username" 
-          placeholder="请输入用户名"
+          :placeholder="$t('enter_username')"
           placeholder-class="placeholder"
         />
       </view>
       
       <view class="form-group">
-        <text class="form-label">密码</text>
+        <text class="form-label">{{ $t('password') }}</text>
         <input 
           class="form-input" 
           type="password" 
           v-model="password" 
-          placeholder="请输入密码"
+          :placeholder="$t('enter_password')"
           placeholder-class="placeholder"
         />
       </view>
@@ -33,11 +33,11 @@
         class="login-btn" 
         @click="login"
       >
-        登录
+        {{ $t('login_btn') }}
       </button>
       
       <view class="form-footer">
-        <text class="register" @click="register">注册</text>
+        <text class="register" @click="register">{{ $t('register_link') }}</text>
       </view>
     </view>
   </view>
@@ -55,7 +55,7 @@ const login = () => {
   // 添加用户名和密码验证
   if (!username.value) {
     uni.showToast({
-      title: '请输入用户名',
+      title: $t('enter_username'),
       icon: 'none'
     })
     return
@@ -63,7 +63,7 @@ const login = () => {
   
   if (!password.value) {
     uni.showToast({
-      title: '请输入密码',
+      title: $t('enter_password'),
       icon: 'none'
     })
     return
@@ -131,14 +131,16 @@ const register = () => {
 }
 
 .form-group {
-  margin-bottom: 40rpx;
+  margin-bottom: 70rpx;
 }
 
 .form-label {
   display: block;
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: $uni-text-color;
   margin-bottom: 10rpx;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .form-input {
@@ -148,12 +150,15 @@ const register = () => {
   background: #ffffff;
   border: 1rpx solid $uni-border-color;
   border-radius: 8rpx;
-  font-size: 32rpx;
+  font-size: 34rpx;
   box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .placeholder {
   color: $uni-text-color-placeholder;
+  font-size: 28rpx;
+  font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .login-btn {
@@ -162,7 +167,7 @@ const register = () => {
   /* 当前颜色：珊瑚粉 */
   background: #f9b8dae3;
   color: #515151;
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 600;
   border: none;
   border-radius: 8rpx;
@@ -170,6 +175,7 @@ const register = () => {
   opacity: 1;
   /* 添加阴影效果 */
   box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .login-btn:disabled {
@@ -184,9 +190,10 @@ const register = () => {
 }
 
 .register {
-  font-size: 28rpx;
+  font-size: 30rpx;
   color: $uni-color-primary;
   cursor: pointer;
   text-align: right;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 </style>

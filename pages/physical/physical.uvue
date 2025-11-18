@@ -14,7 +14,7 @@
     <!-- 会话列表侧边栏 -->
     <view class="session-sidebar" :class="{ active: showSessionList }">
       <view class="sidebar-header">
-        <text class="sidebar-title">历史会话</text>
+        <text class="sidebar-title">{{ $t('health.history_sessions') }}</text>
         <button class="close-btn" @click="toggleSessionList">×</button>
       </view>
       
@@ -34,13 +34,13 @@
         </view>
         
         <view v-if="sessions.length === 0" class="empty-sessions">
-          <text class="empty-text">暂无历史会话</text>
+          <text class="empty-text">{{ $t('health.no_sessions') }}</text>
         </view>
       </view>
       
       <button class="new-session-btn" @click="createNewSession">
         <text class="icon">+</text>
-        <text>新建对话</text>
+        <text>{{ $t('health.new_chat') }}</text>
       </button>
     </view>
     
@@ -132,19 +132,19 @@
     <view class="bottom-nav">
       <view class="nav-item" @click="navigateToPage('/pages/index/index')">
         <text class="nav-icon">📊</text>
-        <text class="nav-text">总览</text>
+        <text class="nav-text">{{ $t('common.home') }}</text>
       </view>
       <view class="nav-item active" @click="navigateToPage('/pages/physical/physical')">
         <text class="nav-icon">🩺</text>
-        <text class="nav-text">健康助手</text>
+        <text class="nav-text">{{ $t('common.health') }}</text>
       </view>
       <view class="nav-item" @click="navigateToPage('/pages/mental/mental')">
         <text class="nav-icon">🧠</text>
-        <text class="nav-text">心灵树洞</text>
+        <text class="nav-text">{{ $t('common.mental') }}</text>
       </view>
       <view class="nav-item" @click="navigateToPage('/pages/mine/mine')">
         <text class="nav-icon">👤</text>
-        <text class="nav-text">我的</text>
+        <text class="nav-text">{{ $t('common.mine') }}</text>
       </view>
     </view>
   </view>

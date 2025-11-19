@@ -16,44 +16,44 @@
     </view>
 
     <!-- 基本信息标题 -->
-    <text class="app-title">{{ $t('basic_info') }}</text>
+    <text class="app-title">{{ t('basic_info') }}</text>
 
     <!-- 基本信息卡片 -->
     <view class="info-section">
       <view class="info-list">
         <view class="info-item" @click="editGender">
           <text class="info-icon">🚻</text>
-          <text class="info-label">{{ $t('gender') }}</text>
-          <text class="info-value gender-value">{{ userInfo.gender === '未知' ? $t('unknown') : (userInfo.gender === '男' ? $t('male') : $t('female')) }}</text>
+          <text class="info-label">{{ t('gender') }}</text>
+          <text class="info-value gender-value">{{ userInfo.gender === '未知' ? t('unknown') : (userInfo.gender === '男' ? t('male') : t('female')) }}</text>
         </view>
         <view class="info-item" @click="editBirthday">
           <text class="info-icon">📅</text>
-          <text class="info-label">{{ $t('birthday') }}</text>
+          <text class="info-label">{{ t('birthday') }}</text>
           <text class="info-value">{{ userInfo.birthday }}</text>
         </view>
         <view class="info-item" @click="editAge">
           <text class="info-icon">🔢</text>
-          <text class="info-label">{{ $t('age') }}</text>
+          <text class="info-label">{{ t('age') }}</text>
           <text class="info-value">{{ userInfo.age }}</text>
         </view>
         <view class="info-item" @click="editHeight">
           <text class="info-icon">📏</text>
-          <text class="info-label">{{ $t('height') }}</text>
-          <text class="info-value height-value">{{ userInfo.height }}{{ $t('cm') }}</text>
+          <text class="info-label">{{ t('height') }}</text>
+          <text class="info-value height-value">{{ userInfo.height }}{{ t('cm') }}</text>
         </view>
         <view class="info-item" @click="editWeight">
           <text class="info-icon">⚖️</text>
-          <text class="info-label">{{ $t('weight') }}</text>
-          <text class="info-value">{{ userInfo.weight }}{{ $t('kg') }}</text>
+          <text class="info-label">{{ t('weight') }}</text>
+          <text class="info-value">{{ userInfo.weight }}{{ t('kg') }}</text>
         </view>
         <view class="info-item" @click="editBMI">
           <text class="info-icon">📊</text>
-          <text class="info-label">{{ $t('bmi') }}</text>
+          <text class="info-label">{{ t('bmi') }}</text>
           <text class="info-value bmi-value">{{ userInfo.bmi }}</text>
         </view>
         <view class="info-item" @click="editBodyFat">
           <text class="info-icon">📈</text>
-          <text class="info-label">{{ $t('fat_rate') }}</text>
+          <text class="info-label">{{ t('fat_rate') }}</text>
           <text class="info-value fat-rate-value">{{ userInfo.fatRate }}%</text>
         </view>
       </view>
@@ -64,7 +64,7 @@
       <view class="info-list">
         <view class="info-item" @click="navigateToSettings">
           <text class="info-icon">⚙️</text>
-          <text class="info-label">{{ $t('settings') }}</text>
+          <text class="info-label">{{ t('common.settings') }}</text>
           <text class="info-value info-arrow">›</text>
         </view>
       </view>
@@ -74,19 +74,19 @@
     <view class="bottom-nav">
       <view class="nav-item" @click="navigateToPage('/pages/index/index')">
         <text class="nav-icon">📊</text>
-        <text class="nav-text">{{ $t('common.home') }}</text>
+        <text class="nav-text">{{ t('common.home') }}</text>
       </view>
       <view class="nav-item" @click="navigateToPage('/pages/physical/physical')">
         <text class="nav-icon">🩺</text>
-        <text class="nav-text">{{ $t('common.health') }}</text>
+        <text class="nav-text">{{ t('common.health') }}</text>
       </view>
       <view class="nav-item" @click="navigateToPage('/pages/mental/mental')">
         <text class="nav-icon">🧠</text>
-        <text class="nav-text">{{ $t('common.mental') }}</text>
+        <text class="nav-text">{{ t('common.mental') }}</text>
       </view>
       <view class="nav-item active" @click="navigateToPage('/pages/mine/mine')">
         <text class="nav-icon">👤</text>
-        <text class="nav-text">{{ $t('common.mine') }}</text>
+        <text class="nav-text">{{ t('common.mine') }}</text>
       </view>
     </view>
 
@@ -96,6 +96,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { t } from '@/utils/i18n/i18n.uts'
 
 // 用户信息
 const userInfo = ref({
@@ -135,13 +136,13 @@ const uploadAvatar = () => {
       // 然后将服务器返回的图片URL保存到userInfo中
       console.log('选择的头像图片路径:', tempFilePath)
       uni.showToast({
-        title: $t('avatar_upload_success'),
+        title: t('avatar_upload_success'),
         icon: 'success'
       })
     },
     fail: () => {
       uni.showToast({
-        title: $t('avatar_select_fail'),
+        title: t('avatar_select_fail'),
         icon: 'none'
       })
     }
@@ -151,9 +152,9 @@ const uploadAvatar = () => {
   // 编辑用户名
 const editNickname = () => {
   uni.showModal({
-    title: $t('edit_nickname'),
+    title: t('edit_nickname'),
     editable: true,
-    placeholderText: $t('enter_nickname'),
+    placeholderText: t('enter_nickname'),
     value: userInfo.value.nickname,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -166,9 +167,9 @@ const editNickname = () => {
 // 编辑BMI
 const editBMI = () => {
   uni.showModal({
-    title: $t('edit_bmi'),
+    title: t('edit_bmi'),
     editable: true,
-    placeholderText: $t('enter_bmi'),
+    placeholderText: t('enter_bmi'),
     value: userInfo.value.bmi,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -177,9 +178,9 @@ const editBMI = () => {
           userInfo.value.bmi = parseFloat(res.content).toFixed(1)
         } else {
           uni.showToast({
-            title: $t('valid_number'),
-            icon: 'none'
-          })
+        title: t('valid_number'),
+        icon: 'none'
+      })
         }
       }
     }
@@ -189,9 +190,9 @@ const editBMI = () => {
 // 编辑体脂率
 const editBodyFat = () => {
   uni.showModal({
-    title: $t('edit_fat_rate'),
+    title: t('edit_fat_rate'),
     editable: true,
-    placeholderText: $t('enter_fat_rate'),
+    placeholderText: t('enter_fat_rate'),
     value: userInfo.value.fatRate,
     success: (res) => {
       if (res.confirm && res.content) {
@@ -215,9 +216,9 @@ initDate()
 // 编辑性别
 const editGender = () => {
   uni.showActionSheet({
-    itemList: [$t('male'), $t('female')],
+    itemList: [t('male'), t('female')],
     success: (res) => {
-      userInfo.value.gender = res.tapIndex === 0 ? $t('male') : $t('female')
+      userInfo.value.gender = res.tapIndex === 0 ? t('male') : t('female')
     }
   })
 }
@@ -280,7 +281,7 @@ const editBirthday = () => {
   const selectYear = () => {
     const years = getYears()
     uni.showActionSheet({
-      title: $t('select_year'),
+      title: t('select_year'),
       itemList: years,
       success: (res) => {
         selectedYear = parseInt(years[res.tapIndex])
@@ -293,7 +294,7 @@ const editBirthday = () => {
   const selectMonth = () => {
     const months = getMonths()
     uni.showActionSheet({
-      title: $t('select_month'),
+      title: t('select_month'),
       itemList: months,
       success: (res) => {
         selectedMonth = parseInt(months[res.tapIndex])

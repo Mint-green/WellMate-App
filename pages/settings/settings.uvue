@@ -5,7 +5,7 @@
         <text class="back-icon">‹</text>
       </view>
       <view class="header-center">
-        <text class="header-title">{{ $t('common.settings') }}</text>
+        <text class="header-title">{{ t('common.settings') }}</text>
       </view>
     </view>
     
@@ -14,9 +14,9 @@
       <view class="setting-group">
         <view class="setting-item language-setting" @click="showLanguageOptions">
           <text class="setting-icon">🌐</text>
-          <text class="setting-label">{{ $t('language') }}</text>
+          <text class="setting-label">{{ t('language') }}</text>
           <view class="language-input-container">
-            <text class="language-value">{{ currentLanguage || $t('language_options_english') }}</text>
+            <text class="language-value">{{ currentLanguage || t('language_options_english') }}</text>
           </view>
         </view>
       </view>
@@ -25,10 +25,10 @@
       
       <!-- 健康监测 -->
       <view class="setting-group">
-        <text class="group-title">{{ $t('notifications') }}</text>
+        <text class="group-title">{{ t('notifications') }}</text>
         <view class="setting-item">
           <text class="setting-icon">🔔</text>
-          <text class="setting-label">{{ $t('notifications') }}</text>
+          <text class="setting-label">{{ t('notifications') }}</text>
           <view class="setting-right">
             <switch :checked="showNotifications" @change="onNotificationsSwitchChange" color="#007AFF"></switch>
           </view>
@@ -36,7 +36,7 @@
         
         <view class="setting-item">
           <text class="setting-icon">💆</text>
-          <text class="setting-label">{{ $t('stress_management') }}</text>
+          <text class="setting-label">{{ t('stress_management') }}</text>
           <view class="setting-right">
             <switch :checked="showStress" @change="onStressSwitchChange" color="#007AFF"></switch>
           </view>
@@ -44,7 +44,7 @@
         
         <view class="setting-item">
           <text class="setting-icon">⚠️</text>
-          <text class="setting-label">{{ $t('body_alert') }}</text>
+          <text class="setting-label">{{ t('body_alert') }}</text>
           <view class="setting-right">
             <switch :checked="showBodyAlert" @change="onBodyAlertSwitchChange" color="#007AFF"></switch>
           </view>
@@ -55,7 +55,7 @@
       <view class="setting-group">
         <view class="setting-item">
           <text class="setting-icon">📖</text>
-          <text class="setting-label">{{ $t('about_us') }}</text>
+          <text class="setting-label">{{ t('about_us') }}</text>
           <view class="setting-right">
             <text class="arrow-icon">›</text>
           </view>
@@ -63,7 +63,7 @@
         
         <view class="setting-item">
           <text class="setting-icon">🔒</text>
-          <text class="setting-label">{{ $t('privacy_policy') }}</text>
+          <text class="setting-label">{{ t('privacy_policy') }}</text>
           <view class="setting-right">
             <text class="arrow-icon">›</text>
           </view>
@@ -71,7 +71,7 @@
         
         <view class="setting-item">
           <text class="setting-icon">📄</text>
-          <text class="setting-label">{{ $t('terms_of_service') }}</text>
+          <text class="setting-label">{{ t('terms_of_service') }}</text>
           <view class="setting-right">
             <text class="arrow-icon">›</text>
           </view>
@@ -87,7 +87,7 @@
         
         <view class="setting-item logout-item" @click="logout">
           <text class="setting-icon logout-icon">🚪</text>
-          <text class="setting-label logout-label">{{ $t('common.logout') }}</text>
+          <text class="setting-label logout-label">{{ t('common.logout') }}</text>
         </view>
       </view>
     </view>

@@ -14,7 +14,7 @@
     <!-- 会话列表侧边栏 -->
     <view class="session-sidebar" :class="{ active: showSessionList }">
       <view class="sidebar-header">
-        <text class="sidebar-title">{{ $t('health.history_sessions') }}</text>
+        <text class="sidebar-title">{{ $t('history_sessions') }}</text>
         <button class="close-btn" @click="toggleSessionList">×</button>
       </view>
       
@@ -113,7 +113,7 @@
           <textarea 
             class="message-input"
             v-model="inputMessage"
-            placeholder="发消息或按住说话..."
+            :placeholder="$t('placeholder')"
             :maxlength="1000"
             :adjust-position="false"
             auto-height="true"
@@ -155,6 +155,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { ChatMessage, ChatSession } from '@/utils/api-service.uts'
 import sessionManager from '@/utils/session-manager.uts'
 import apiService from '@/utils/api-service.uts'
+import { t } from '@/utils/i18n/i18n.uts'
 
 // 响应式数据
 const showSessionList = ref(false)
@@ -232,8 +233,10 @@ const deleteSession = (sessionId: string) => {
   
   // 直接显示确认框
   uni.showModal({
-    title: '确认删除',
-    content: '确定要删除这个会话吗？',
+    title: t('delete_confirm'),
+    content: t('delete_content'),
+    cancelText: t('cancel'),
+    confirmText: t('confirm'),
     success: (res) => {
       if (res.confirm) {
         if (sessionManager.deleteSession(sessionId)) {

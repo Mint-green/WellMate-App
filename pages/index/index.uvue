@@ -21,20 +21,19 @@
             <!-- 外环 - 步数 -->
             <view class="outer-ring">
               <view class="ring-bg"></view>
-              <view class="ring-progress" :style="{ transform: 'rotate(' + (stepProgress * 180) + 'deg)' }"></view>
+              <view class="ring-progress" :style="{ transform: 'rotate(' + ((stepProgress * 360) - 180) + 'deg)' }"></view>
             </view>
             <!-- 内环 - 运动量 -->
             <view class="inner-ring">
               <view class="ring-bg"></view>
-              <view class="ring-progress" :style="{ transform: 'rotate(' + (exerciseProgress * 180) + 'deg)' }"></view>
+              <view class="ring-progress" :style="{ transform: 'rotate(' + ((exerciseProgress * 360) - 180) + 'deg)' }"></view>
             </view>
             <!-- 中心数据区域 -->
             <view class="chart-center">
               <view class="data-group">
-                <text class="data-value">7,500</text>
-                <text class="data-label">{{ $t('home_today_steps') }}</text>
-                <text class="data-target">{{ $t('home_target') }} 10,000</text>
-                <text class="data-percentage">{{ Math.round(stepProgress * 100) }}%</text>
+                <text class="data-value">8,000</text>
+                <text class="data-label">/10000</text>
+                <text class="data-percentage">Today's Steps</text>
               </view>
               <view class="data-group">
                 <text class="data-value">85%</text>
@@ -57,7 +56,6 @@
             <text class="card-value">8.2h</text>
             <text class="card-label">{{ $t('home_sleep_duration') }}</text>
           </view>
-          <view class="card-arrow">›</view>
         </view>
         
         <view class="health-card" @click="showHeartRateDetail">
@@ -66,25 +64,22 @@
             <text class="card-value">72</text>
             <text class="card-label">{{ $t('home_heart_rate') }}</text>
           </view>
-          <view class="card-arrow">›</view>
         </view>
         
         <view class="health-card" @click="showStepsDetail">
           <view class="card-icon steps-icon">👣</view>
           <view class="card-content">
-            <text class="card-value">7,500</text>
+            <text class="card-value">8,000</text>
             <text class="card-label">{{ $t('home_steps') }}</text>
           </view>
-          <view class="card-arrow">›</view>
         </view>
         
         <view class="health-card" @click="showBloodOxygenDetail">
-          <view class="card-icon oxygen-icon">💨</view>
+          <view class="card-icon oxygen-icon" style="font-size: 48rpx; font-weight: bold;">O₂</view>
           <view class="card-content">
             <text class="card-value">98%</text>
             <text class="card-label">{{ $t('home_blood_oxygen') }}</text>
           </view>
-          <view class="card-arrow">›</view>
         </view>
         
         <view class="health-card" @click="showStressDetail">
@@ -93,7 +88,6 @@
             <text class="card-value">58</text>
             <text class="card-label">{{ $t('home_stress_index') }}</text>
           </view>
-          <view class="card-arrow">›</view>
         </view>
         
         <view class="health-card" @click="showMoodDetail">
@@ -102,7 +96,6 @@
             <text class="card-value">{{ $t('home_mood_good') }}</text>
             <text class="card-label">{{ $t('home_mood_status') }}</text>
           </view>
-          <view class="card-arrow">›</view>
         </view>
       </view>
     </view>
@@ -143,19 +136,19 @@
             <view class="radar-point coldness" style="top: 20%; left: 30%"></view>
             <view class="radar-point neutral" style="top: 50%; left: 50%"></view>
           </view>
-          
-          <!-- 雷达图标签 -->
-          <view class="radar-labels">
-            <text class="radar-label happy" style="top: -5%; left: 50%; transform: translateX(-50%)">happy</text>
-            <text class="radar-label excited" style="top: 10%; right: 20%">excited</text>
-            <text class="radar-label surprised" style="top: 30%; right: -2%">surprised</text>
-            <text class="radar-label angry" style="top: 60%; right: -2%">angry</text>
-            <text class="radar-label fear" style="bottom: -5%; left: 50%; transform: translateX(-50%)">fear</text>
-            <text class="radar-label sad" style="top: 60%; left: -2%">sad</text>
-            <text class="radar-label hate" style="top: 30%; left: -2%">hate</text>
-            <text class="radar-label coldness" style="top: 10%; left: 20%">coldness</text>
-            <text class="radar-label neutral" style="top: 50%; left: 50%; transform: translate(-50%, -50%)">neutral</text>
-          </view>
+        </view>
+        
+        <!-- 雷达图标签 - 放置在雷达图外部 -->
+        <view class="radar-labels">
+          <text class="radar-label happy" style="top: 0; left: 50%; transform: translateX(-50%)">happy</text>
+          <text class="radar-label excited" style="top: 15%; right: 5%; transform: translateX(50%)">excited</text>
+          <text class="radar-label surprised" style="top: 40%; right: -10%; transform: translateX(50%)">surprised</text>
+          <text class="radar-label angry" style="bottom: 20%; right: -10%; transform: translateX(50%)">angry</text>
+          <text class="radar-label fear" style="bottom: -10%; left: 50%; transform: translateX(-50%)">fear</text>
+          <text class="radar-label sad" style="bottom: 20%; left: -10%; transform: translateX(-50%)">sad</text>
+          <text class="radar-label hate" style="top: 40%; left: -10%; transform: translateX(-50%)">hate</text>
+          <text class="radar-label coldness" style="top: 15%; left: 5%; transform: translateX(-50%)">coldness</text>
+          <text class="radar-label neutral" style="top: 50%; left: 50%; transform: translate(-50%, -50%)">neutral</text>
         </view>
       </view>
       
@@ -195,22 +188,22 @@
 import { ref, onMounted } from 'vue'
 
 // 日期相关
-const currentDate = ref(new Date())
+const currentDate = ref(new Date('2025-11-19'))
 // 触摸事件相关
 const startY = ref(0)
 const moveY = ref(0)
 const touchThreshold = 50 // 触摸滑动阈值
 
 // 进度数据
-const stepProgress = ref(0.75) // 7500/10000
+const stepProgress = ref(0.8) // 8000/10000
 const exerciseProgress = ref(0.85) // 85%
 
-// 格式化日期为 YYYY年MM月DD日 格式
+// 格式化日期为 YYYY.MM.DD 格式
 const formatDate = (date) => {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
-  return `${year}年${month}月${day}日`
+  return `${year}.${month}.${day}`
 }
 
 // 前往前一天
@@ -265,9 +258,9 @@ const onTouchEnd = () => {
 // 根据日期更新数据（模拟）
 const updateDataForDate = (date) => {
   // 这里可以根据日期从服务器获取数据
-  // 目前使用随机数据模拟
-  stepProgress.value = Math.random() * 0.8 + 0.2 // 20%-100%
-  exerciseProgress.value = Math.random() * 0.7 + 0.3 // 30%-100%
+  // 目前使用固定数据
+  stepProgress.value = 0.8 // 80%
+  exerciseProgress.value = 0.1 // 30%
 }
 
 
@@ -450,7 +443,8 @@ const navigateToPage = (url) => {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 16rpx solid #f5f5f5;
+  border: 24rpx solid #f5f5f5;
+  border: 24rpx solid #3498db;
   border-bottom: none;
   border-radius: 250rpx 250rpx 0 0;
   box-sizing: border-box;
@@ -460,24 +454,15 @@ const navigateToPage = (url) => {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 16rpx solid transparent;
-  border-top: 16rpx solid #3498db;
+  border: 24rpx solid transparent;
+  border-top: 24rpx solid #3498db;
+  border-top: 24rpx solid #f5f5f5;
   border-radius: 50%;
   box-sizing: border-box;
   transform-origin: center;
   transition: transform 0.5s ease;
-}
-
-.inner-ring .ring-progress {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 14rpx solid transparent;
-  border-top: 14rpx solid #e74c3c;
-  border-radius: 50%;
-  box-sizing: border-box;
-  transform-origin: center;
-  transition: transform 0.5s ease;
+  /* 确保最左边的点始终被覆盖 */
+  clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
 }
 
 .inner-ring {
@@ -494,7 +479,8 @@ const navigateToPage = (url) => {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 14rpx solid #f5f5f5;
+  border: 20rpx solid #f5f5f5;
+  border: 20rpx solid #e74c3c;
   border-bottom: none;
   border-radius: 180rpx 180rpx 0 0;
   box-sizing: border-box;
@@ -504,12 +490,15 @@ const navigateToPage = (url) => {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 14rpx solid transparent;
-  border-top: 14rpx solid #e74c3c;
+  border: 20rpx solid transparent;
+  border-top: 20rpx solid #e74c3c;
+  border-top: 20rpx solid #f5f5f5;
   border-radius: 50%;
   box-sizing: border-box;
   transform-origin: center;
   transition: transform 0.5s ease;
+  /* 确保最左边的点始终被覆盖 */
+  clip-path: polygon(0% 0%, 100% 0%, 100% 50%, 0% 50%);
 }
 
 .chart-center {
@@ -547,7 +536,7 @@ const navigateToPage = (url) => {
   font-size: 22rpx;
   color: $uni-text-color-grey;
   display: block;
-  margin-bottom: 4rpx;
+  margin-top: 4rpx;
   line-height: 1.2;
 }
 
@@ -564,7 +553,6 @@ const navigateToPage = (url) => {
   font-weight: bold;
   color: $uni-color-primary;
   display: block;
-  margin-top: 4rpx;
   line-height: 1.2;
 }
 
@@ -590,7 +578,9 @@ const navigateToPage = (url) => {
   border-radius: 16rpx;
   padding: 30rpx 25rpx;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   box-shadow: 0 2rpx 12rpx rgba(92, 64, 51, 0.08);
   transition: all 0.3s ease;
 }
@@ -602,13 +592,18 @@ const navigateToPage = (url) => {
 
 .card-icon {
   font-size: 48rpx;
-  margin-right: 20rpx;
+  margin-bottom: 10rpx;
   width: 60rpx;
   text-align: center;
 }
 
 .card-content {
+  text-align: center;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-value {
@@ -617,6 +612,7 @@ const navigateToPage = (url) => {
   color: $uni-text-color;
   display: block;
   line-height: 1.2;
+  text-align: center;
 }
 
 .card-label {
@@ -624,6 +620,7 @@ const navigateToPage = (url) => {
   color: $uni-text-color-grey;
   display: block;
   margin-top: 4rpx;
+  text-align: center;
 }
 
 .card-arrow {
@@ -637,8 +634,9 @@ const navigateToPage = (url) => {
   margin: 60rpx 20rpx 40rpx;
   background: #ffffff;
   border-radius: 20rpx;
-  padding: 30rpx;
+  padding: 50rpx 30rpx;
   box-shadow: 0 2rpx 12rpx rgba(92, 64, 51, 0.08);
+  overflow: visible;
 }
 
 .mood-chart-container {
@@ -648,6 +646,8 @@ const navigateToPage = (url) => {
   margin: 30rpx 0;
   cursor: pointer;
   transition: transform 0.3s ease;
+  overflow: visible;
+  position: relative;
 }
 
 .mood-chart-container:active {
@@ -658,6 +658,8 @@ const navigateToPage = (url) => {
   width: 400rpx;
   height: 400rpx;
   position: relative;
+  margin: 0 auto;
+  overflow: visible;
 }
 
 .radar-grid {
@@ -666,6 +668,7 @@ const navigateToPage = (url) => {
   position: absolute;
   top: 0;
   left: 0;
+  overflow: visible;
 }
 
 .radar-circle {
@@ -803,22 +806,28 @@ const navigateToPage = (url) => {
 
 .radar-labels {
   position: absolute;
-  width: 120%;
-  height: 120%;
-  top: -10%;
-  left: -10%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .radar-label {
   position: absolute;
-  font-size: 24rpx;
-  font-weight: bold;
-  text-shadow: 0 0 6rpx rgba(255, 255, 255, 1), 0 0 10rpx rgba(255, 255, 255, 0.8);
+  font-size: 20rpx;
+  font-weight: 500;
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.1);
   padding: 4rpx 8rpx;
   border-radius: 8rpx;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.95);
   white-space: nowrap;
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+  z-index: 11;
+  pointer-events: auto;
+  transform-origin: center;
 }
 
 .mood-summary {

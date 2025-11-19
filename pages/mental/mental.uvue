@@ -182,10 +182,11 @@ onMounted(() => {
 
 // 加载会话列表
 const loadSessions = () => {
-  sessions.value = sessionManager.getSessions()
+  // 只加载心理健康类型的会话
+  sessions.value = sessionManager.getSessions('mental')
   
   // 设置当前会话
-  const currentSession = sessionManager.getCurrentSession()
+  const currentSession = sessionManager.getCurrentSession('mental')
   if (currentSession) {
     currentSessionId.value = currentSession.id
     currentSessionTitle.value = currentSession.title
@@ -200,7 +201,7 @@ const toggleSessionList = () => {
 
 // 创建新会话
 const createNewSession = () => {
-  const session = sessionManager.createNewSession(undefined, true)
+  const session = sessionManager.createNewSession(undefined, 'mental')
   currentSessionId.value = session.id
   currentSessionTitle.value = session.title
   currentMessages.value = []
@@ -209,9 +210,9 @@ const createNewSession = () => {
 
 // 切换会话
 const switchSession = (sessionId: string) => {
-  if (sessionManager.setCurrentSession(sessionId)) {
+  if (sessionManager.setCurrentSession(sessionId, 'mental')) {
     currentSessionId.value = sessionId
-    const session = sessionManager.getCurrentSession()
+    const session = sessionManager.getCurrentSession('mental')
     if (session) {
       currentSessionTitle.value = session.title
       currentMessages.value = session.messages
@@ -234,7 +235,7 @@ const deleteSession = (sessionId: string) => {
     confirmText: t('confirm'),
     success: (res) => {
       if (res.confirm) {
-        if (sessionManager.deleteSession(sessionId)) {
+        if (sessionManager.deleteSession(sessionId, 'mental')) {
           loadSessions()
           // 如果删除的是当前会话，创建新会话
           if (currentSessionId.value === sessionId) {
@@ -259,7 +260,7 @@ const sendMessage = async () => {
     timestamp: Date.now()
   }
   
-  sessionManager.addMessageToCurrentSession(userMessage)
+  sessionManager.addMessageToCurrentSession(userMessage, 'mental')
   currentMessages.value = [...currentMessages.value, userMessage]
   inputMessage.value = ''
   isLoading.value = true
@@ -278,7 +279,7 @@ const sendMessage = async () => {
         timestamp: Date.now()
       }
       
-      sessionManager.addMessageToCurrentSession(assistantMessage)
+      sessionManager.addMessageToCurrentSession(assistantMessage, 'mental')
       currentMessages.value = [...currentMessages.value, assistantMessage]
     } else {
       // 模拟回复（开发阶段）
@@ -289,7 +290,7 @@ const sendMessage = async () => {
         timestamp: Date.now()
       }
       
-      sessionManager.addMessageToCurrentSession(mockMessage)
+      sessionManager.addMessageToCurrentSession(mockMessage, 'mental')
       currentMessages.value = [...currentMessages.value, mockMessage]
     }
   } catch (error) {
@@ -303,7 +304,7 @@ const sendMessage = async () => {
       timestamp: Date.now()
     }
     
-    sessionManager.addMessageToCurrentSession(errorMessage)
+    sessionManager.addMessageToCurrentSession(errorMessage, 'mental')
     currentMessages.value = [...currentMessages.value, errorMessage]
   }
   

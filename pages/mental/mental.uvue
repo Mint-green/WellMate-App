@@ -307,6 +307,9 @@ const sendMessage = async () => {
         } else {
           content = '感谢您的咨询，我已经收到了您的消息。';
         }
+        
+        // 剔除括号()及其包裹的内容
+        content = content.replace(/\([^)]*\)/g, '');
     
     const assistantMessage: ChatMessage = {
       id: 'msg_' + Date.now(),
@@ -362,6 +365,9 @@ const showMoreOptions = () => {
 const useNewTTSApi = ref(true); // true使用新接口，false使用原方案
 
 const playVoice = async (text: string) => {
+  // 剔除emoji表情符号
+  const cleanText = text.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '');
+  
   if (useNewTTSApi.value) {
     // 使用新的API接口
     try {
@@ -378,7 +384,7 @@ const playVoice = async (text: string) => {
           'Content-Type': 'application/json'
         },
         data: {
-          input: text
+          input: cleanText
         },
         responseType: 'arraybuffer' // 重要：指定响应类型为arraybuffer以接收音频数据
       });
@@ -417,7 +423,7 @@ const playVoice = async (text: string) => {
   } else {
     // 原方案：使用浏览器语音合成API
     if ('speechSynthesis' in window) {
-      const speech = new SpeechSynthesisUtterance(text);
+      const speech = new SpeechSynthesisUtterance(cleanText);
       speech.lang = 'zh-CN'; // 设置语言为中文
       speech.rate = 1; // 语速
       speech.pitch = 1; // 音调

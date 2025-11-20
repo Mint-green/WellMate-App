@@ -74,6 +74,9 @@
             <!-- 助手消息使用Markdown渲染 -->
             <markdown-render v-else :content="message.content" />
             <text class="message-time">{{ formatTime(message.timestamp) }}</text>
+            <button v-if="message.role === 'assistant'" class="voice-button" @click="playVoice(message.content)">
+              <text class="voice-icon">🔊</text>
+            </button>
           </view>
         </view>
         
@@ -353,6 +356,24 @@ const showMoreOptions = () => {
     icon: 'none',
     duration: 2000
   })
+}
+
+// 语音播放功能
+const playVoice = (text: string) => {
+  // 检查浏览器是否支持语音合成API
+  if ('speechSynthesis' in window) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = 'zh-CN'; // 设置语言为中文
+    speech.rate = 1; // 语速
+    speech.pitch = 1; // 音调
+    speech.volume = 1; // 音量
+    speechSynthesis.speak(speech);
+  } else {
+    uni.showToast({
+      title: '当前设备不支持语音播放',
+      icon: 'none'
+    });
+  }
 }
 
 // 滚动到底部
@@ -676,6 +697,36 @@ const navigateToPage = (url) => {
   color: #999999;
   margin-top: 10rpx;
   display: block;
+}
+
+.voice-button {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 50%;
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16rpx;
+  cursor: pointer;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.voice-button:hover {
+  background-color: #e0e0e0;
+}
+
+.voice-button:active {
+  background-color: #d0d0d0;
+  box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.voice-button .voice-icon {
+  font-size: 32rpx;
+  color: #555;
+  width: auto;
+  height: auto;
 }
 
 .message.user .message-time {

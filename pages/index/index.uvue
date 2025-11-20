@@ -124,7 +124,7 @@
           <!-- 雷达图数据点 -->
           <view class="radar-data">
               <view class="radar-shape" :style="{
-                clipPath: 'polygon(50% 10%, 75% 20%, 90% 35%, 85% 55%, 70% 75%, 50% 85%, 30% 75%, 15% 55%, 10% 35%, 25% 20%)'
+                clipPath: 'polygon(50% 10%, 70% 20%, 85% 35%, 80% 60%, 50% 80%, 20% 60%, 15% 35%, 30% 20%, 50% 35%, 50% 10%)'
               }"></view>
             <view class="radar-point happy" style="top: 10%; left: 50%"></view>
             <view class="radar-point excited" style="top: 20%; left: 70%"></view>
@@ -134,29 +134,29 @@
             <view class="radar-point sad" style="top: 60%; left: 20%"></view>
             <view class="radar-point hate" style="top: 35%; left: 15%"></view>
             <view class="radar-point coldness" style="top: 20%; left: 30%"></view>
-            <view class="radar-point neutral" style="top: 50%; left: 50%"></view>
+            <view class="radar-point neutral" style="top: 35%; left: 50%"></view>
           </view>
-        </view>
-        
-        <!-- 雷达图标签 - 放置在雷达图外部 -->
-        <view class="radar-labels">
-          <text class="radar-label happy" style="top: 0; left: 50%; transform: translateX(-50%)">happy</text>
-          <text class="radar-label excited" style="top: 15%; right: 5%; transform: translateX(50%)">excited</text>
-          <text class="radar-label surprised" style="top: 40%; right: -10%; transform: translateX(50%)">surprised</text>
-          <text class="radar-label angry" style="bottom: 20%; right: -10%; transform: translateX(50%)">angry</text>
-          <text class="radar-label fear" style="bottom: -10%; left: 50%; transform: translateX(-50%)">fear</text>
-          <text class="radar-label sad" style="bottom: 20%; left: -10%; transform: translateX(-50%)">sad</text>
-          <text class="radar-label hate" style="top: 40%; left: -10%; transform: translateX(-50%)">hate</text>
-          <text class="radar-label coldness" style="top: 15%; left: 5%; transform: translateX(-50%)">coldness</text>
-          <text class="radar-label neutral" style="top: 50%; left: 50%; transform: translate(-50%, -50%)">neutral</text>
+          
+          <!-- 雷达图标签 - 放置在雷达图内部 -->
+          <view class="radar-labels">
+            <text class="radar-label happy" style="top: 15%; left: 50%; transform: translateX(-50%)">happy</text>
+            <text class="radar-label excited" style="top: 25%; left: 75%; transform: translateX(-50%)">excited</text>
+            <text class="radar-label surprised" style="top: 40%; left: 85%; transform: translateX(-50%)">surprised</text>
+            <text class="radar-label angry" style="top: 65%; left: 80%; transform: translateX(-50%)">angry</text>
+            <text class="radar-label fear" style="top: 85%; left: 50%; transform: translateX(-50%)">fear</text>
+            <text class="radar-label sad" style="top: 65%; left: 20%; transform: translateX(-50%)">sad</text>
+            <text class="radar-label hate" style="top: 40%; left: 15%; transform: translateX(-50%)">hate</text>
+            <text class="radar-label coldness" style="top: 25%; left: 25%; transform: translateX(-50%)">coldness</text>
+            <text class="radar-label neutral" style="top: 30%; left: 50%; transform: translateX(-50%)">neutral</text>
+          </view>
         </view>
       </view>
       
       <!-- 今日心情总结 -->
       <view class="mood-summary">
-        <text class="summary-title">{{ $t('home_mood_summary') }}</text>
+        <text class="summary-title">{{ $t('home_mood_summary') }}:<text class="summary-highlight-mood">Happy</text></text>
         <text class="summary-content">
-          {{ $t('home_mood_summary_content') }}
+          Your overall mood today is positive, with high levels of happiness, accompanied by slight excitement and neutral emotions. It is recommended to continue maintaining your current lifestyle and participate in activities that bring you joy.
         </text>
       </view>
     </view>
@@ -311,12 +311,7 @@ const showMoodDetail = () => {
 
 // 显示心情解析
 const showMoodAnalysis = () => {
-  uni.showModal({
-    title: '今日心情解析',
-    content: '根据您今日的心情数据：happy(85%), sad(15%), angry(5%), surprised(20%), fear(5%), hate(0%), excited(30%), coldness(10%), neutral(40%)。这表明您今日整体情绪积极，快乐指数较高，伴有轻微的兴奋和中立情绪。建议继续保持当前的生活状态，多参与令您愉悦的活动。',
-    showCancel: false,
-    confirmText: 'I know'
-  })
+  // 心情解析现在直接显示在页面上，无需弹出模态框
 }
 
 // 页面显示时初始化数据
@@ -673,7 +668,7 @@ const navigateToPage = (url) => {
 
 .radar-circle {
   position: absolute;
-  border: 2rpx solid #e0e0e0;
+  border: 2rpx solid #ffb3d9;
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -717,8 +712,8 @@ const navigateToPage = (url) => {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: rgba(52, 152, 219, 0.2);
-  border: 3rpx solid #3498db;
+  background: rgba(255, 100, 150, 0.25);
+  border: 3rpx solid #ff6496;
   border-radius: 50%;
 }
 
@@ -840,6 +835,13 @@ const navigateToPage = (url) => {
   color: #2c3e50;
   display: block;
   margin-bottom: 15rpx;
+}
+
+.summary-highlight-mood {
+  color: #FFD700;
+  font-weight: 800;
+  margin-left: 16rpx;
+  font-size: 40rpx;
 }
 
 .summary-content {

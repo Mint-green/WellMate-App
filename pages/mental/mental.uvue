@@ -55,24 +55,24 @@
     >
       <view class="messages">
         <view 
-          v-for="message in currentMessages" 
+          v-for="(message, index) in currentMessages" 
           :key="message.id"
-          class="message"
-          :class="message.role"
+          :class="['message', message.role]"
         >
           <view class="avatar">
-              <template v-if="message.role === 'user'">
-                <image class="avatar-image" src="/static/id_image.jpg" mode="aspectFit"></image>
-              </template>
-              <template v-else>
-                <image class="avatar-image" src="/static/mental_logo.png" mode="aspectFit"></image>
-              </template>
-            </view>
+            <image 
+              class="avatar-image" 
+              :src="message.role === 'user' ? '/static/logo_noname.png' : '/static/mental_logo.png'" 
+              mode="aspectFit"
+            ></image>
+          </view>
           <view class="message-content">
             <!-- 用户消息使用普通文本显示 -->
             <text v-if="message.role === 'user'" class="message-text">{{ message.content }}</text>
             <!-- 助手消息使用Markdown渲染 -->
-            <markdown-render v-else :content="message.content" />
+            <view v-else class="assistant-message-bubble">
+              <markdown-render :content="message.content" />
+            </view>
             <text class="message-time">{{ formatTime(message.timestamp) }}</text>
             <button v-if="message.role === 'assistant'" class="voice-button" @click="playVoice(message.content)">
               <text class="voice-icon">🔊</text>
@@ -80,7 +80,7 @@
           </view>
         </view>
         
-        <view v-if="currentMessages.length === 0" class="welcome-message">
+        <view v-if="currentMessages.length === 0 && !isLoading" class="welcome-message">
           <image class="welcome-icon" src="/static/mental_logo.png" mode="aspectFit"></image>
           <text class="welcome-title">Hi, it's me, Xiao Mo.</text>
           <text class="welcome-subtitle">(｡･∀･)ﾉﾞHow are you feeling today?</text>
@@ -680,6 +680,17 @@ const navigateToPage = (url) => {
 .message.user .message-content {
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   color: white;
+}
+
+.message.assistant .message-content {
+  background: #ffffff;
+  color: #333333;
+  border: 1rpx solid #eeeeee;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.assistant-message-bubble {
+  width: 100%;
 }
 
 .message-text {

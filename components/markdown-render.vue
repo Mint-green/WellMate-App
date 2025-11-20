@@ -9,7 +9,7 @@
       <!-- 段落 -->
       <view v-else-if="element.type === 'paragraph'" class="markdown-paragraph">
         <block v-for="(child, childIndex) in element.children" :key="childIndex">
-          <text v-if="child.type === 'text'">{{ child.content }}</text>
+          <text v-if="child.type === 'text'" class="markdown-text">{{ child.content }}</text>
           <text v-else-if="child.type === 'bold'" class="markdown-bold">{{ child.content }}</text>
           <text v-else-if="child.type === 'italic'" class="markdown-italic">{{ child.content }}</text>
           <text v-else-if="child.type === 'inline-code'" class="markdown-inline-code">{{ child.content }}</text>
@@ -237,7 +237,8 @@ const parsedElements = computed(() => {
       
       // 处理粗体 (**text** 或 __text__)
       processedLine = processedLine.replace(/\*\*(.*?)\*\*|__(.*?)__/g, (match, p1, p2) => {
-        return `{{bold:${p1 || p2}}}`
+        const content = p1 || p2
+        return content ? `{{bold:${content}}}` : match
       })
       
       // 处理斜体 (*text* 或 _text_)
@@ -367,6 +368,14 @@ const parsedElements = computed(() => {
   line-height: 1.6;
   margin: 10rpx 0;
   color: #333;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  width: 100%;
+}
+
+.markdown-text {
   word-wrap: break-word;
   word-break: break-word;
   overflow-wrap: break-word;

@@ -4,17 +4,23 @@
  */
 
 import { ChatSession, ChatMessage } from './api-service.uts'
+import { t } from './i18n/i18n.uts'
 
 class SessionManager {
   private storageKey = 'wellmate_chat_sessions'
-  private currentSessionId: string | null = null
+  private currentSessionId: { [key in 'health' | 'mental']?: string } = {}
   
   // 获取所有会话
-  getSessions(): ChatSession[] {
+  getSessions(type?: 'health' | 'mental'): ChatSession[] {
     try {
       const sessionsStr = uni.getStorageSync(this.storageKey)
       if (sessionsStr) {
-        return JSON.parse(sessionsStr) as ChatSession[]
+        const allSessions = JSON.parse(sessionsStr) as ChatSession[]
+        // 如果指定了类型，只返回对应类型的会话
+        if (type) {
+          return allSessions.filter(session => session.type === type)
+        }
+        return allSessions
       }
     } catch (error) {
       console.error('获取会话列表失败:', error)
@@ -46,36 +52,38 @@ class SessionManager {
   }
   
   // 创建新会话
-  createNewSession(title?: string): ChatSession {
+  createNewSession(title?: string, type: 'health' | 'mental' = 'health'): ChatSession {
     const session: ChatSession = {
       id: this.generateSessionId(),
-      title: title || '新对话',
+      title: title || t(type === 'mental' ? 'mental_new_session' : 'new_session'),
       messages: [],
       createdAt: Date.now(),
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
+      type: type
     }
     
     this.saveSession(session)
-    this.currentSessionId = session.id
+    this.currentSessionId[type] = session.id
     
     return session
   }
   
   // 获取当前会话
-  getCurrentSession(): ChatSession | null {
-    if (!this.currentSessionId) return null
+  getCurrentSession(type: 'health' | 'mental'): ChatSession | null {
+    const currentId = this.currentSessionId[type]
+    if (!currentId) return null
     
     const sessions = this.getSessions()
-    return sessions.find(s => s.id === this.currentSessionId) || null
+    return sessions.find(s => s.id === currentId) || null
   }
   
   // 设置当前会话
-  setCurrentSession(sessionId: string): boolean {
-    const sessions = this.getSessions()
+  setCurrentSession(sessionId: string, type: 'health' | 'mental'): boolean {
+    const sessions = this.getSessions(type)
     const session = sessions.find(s => s.id === sessionId)
     
     if (session) {
-      this.currentSessionId = sessionId
+      this.currentSessionId[type] = sessionId
       return true
     }
     
@@ -83,15 +91,15 @@ class SessionManager {
   }
   
   // 添加消息到当前会话
-  addMessageToCurrentSession(message: ChatMessage): boolean {
-    const session = this.getCurrentSession()
+  addMessageToCurrentSession(message: ChatMessage, type: 'health' | 'mental'): boolean {
+    const session = this.getCurrentSession(type)
     if (!session) return false
     
     session.messages.push(message)
     session.updatedAt = Date.now()
     
     // 自动生成会话标题（如果还是默认标题）
-    if (session.title === '新对话' && message.role === 'user') {
+    if ((session.title === '新对话' || session.title === 'New Message' || session.title === 'New Session') && message.role === 'user') {
       session.title = this.generateTitleFromMessage(message.content)
     }
     
@@ -100,20 +108,21 @@ class SessionManager {
   }
   
   // 删除会话
-  deleteSession(sessionId: string): boolean {
+  deleteSession(sessionId: string, type: 'health' | 'mental'): boolean {
     const sessions = this.getSessions()
-    const filteredSessions = sessions.filter(s => s.id !== sessionId)
+    const sessionToDelete = sessions.find(s => s.id === sessionId)
     
-    if (filteredSessions.length === sessions.length) {
+    if (!sessionToDelete) {
       return false // 没有找到要删除的会话
     }
     
+    const filteredSessions = sessions.filter(s => s.id !== sessionId)
     try {
       uni.setStorageSync(this.storageKey, JSON.stringify(filteredSessions))
       
-      // 如果删除的是当前会话，清空当前会话ID
-      if (this.currentSessionId === sessionId) {
-        this.currentSessionId = null
+      // 如果删除的是当前会话，清空对应类型的当前会话ID
+      if (this.currentSessionId[type] === sessionId) {
+        this.currentSessionId[type] = undefined
       }
       
       return true
@@ -124,10 +133,19 @@ class SessionManager {
   }
   
   // 清空所有会话
-  clearAllSessions(): void {
+  clearAllSessions(type?: 'health' | 'mental'): void {
     try {
-      uni.setStorageSync(this.storageKey, JSON.stringify([]))
-      this.currentSessionId = null
+      if (type) {
+        // 只清空指定类型的会话
+        const sessions = this.getSessions().filter(s => s.type !== type)
+        uni.setStorageSync(this.storageKey, JSON.stringify(sessions))
+        // 清空对应类型的当前会话ID
+        this.currentSessionId[type] = undefined
+      } else {
+        // 清空所有会话
+        uni.setStorageSync(this.storageKey, JSON.stringify([]))
+        this.currentSessionId = {}
+      }
     } catch (error) {
       console.error('清空会话失败:', error)
     }

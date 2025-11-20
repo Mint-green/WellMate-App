@@ -16,6 +16,7 @@ export interface ChatSession {
   messages: ChatMessage[]
   createdAt: number
   updatedAt: number
+  type: 'health' | 'mental'
 }
 
 export interface HealthData {
@@ -56,6 +57,28 @@ class ApiService {
       return response.data as ApiResponse<ChatMessage>
     } catch (error) {
       console.error('发送消息失败:', error)
+      throw error
+    }
+  }
+  
+  // 身体健康文本对话接口（调用指定后端）
+  async sendHealthMessage(message: string, sessionId?: string): Promise<any> {
+    try {
+      const response = await uni.request({
+        url: 'http://47.113.206.45:5000/api/v1/health/physical/text',
+        method: 'POST',
+        data: {
+          message: message,
+          session_id: sessionId
+        },
+        header: {
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('发送健康消息失败:', error)
       throw error
     }
   }

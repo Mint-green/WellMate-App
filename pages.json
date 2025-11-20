@@ -1,36 +1,90 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://doc.dcloud.net.cn/uni-app-x/collocation/pagesjson.html
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "WellMate",
-				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/chat/chat",
-			"style": {
-				"navigationBarTitleText": "WellMate AI",
-				"navigationStyle": "custom",
-				"enablePullDownRefresh": false
-			}
-		},
-		{
-			"path": "pages/mine/mine",
-			"style": {
-				"navigationBarTitleText": "我的",
-				"navigationStyle": "custom"
-			}
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "WellMate AI",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8",
-		"usingComponents": {
-		  "uni-toast": "@/uni_modules/uni-ui/components/uni-toast/uni-toast.uvue"
-		}
-	},
-	"uniIdRouter": {}
+  "pages": [
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#ffffff",
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "登录",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
+      "path": "pages/register/register",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarBackgroundColor": "#ffffff",
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "注册",
+        "enablePullDownRefresh": false
+      }
+    },
+
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/physical/physical",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/mental/mental",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/mine/mine",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/settings/settings",
+      "style": {
+        "navigationBarTitleText": "",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#3498db",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/physical/physical",
+        "text": "健康助手"
+      },
+      {
+        "pagePath": "pages/mental/mental",
+        "text": "心灵树洞"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "text": "总览"
+      }
+    ]
+  }
 }

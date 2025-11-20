@@ -11,7 +11,12 @@
 		"setting": {
 			"urlCheck": false
 		},
-		"usingComponents": true
+		"usingComponents": true,
+		"permission": {
+			"scope.webView": {
+				"desc": "用于在应用内打开网页"
+			}
+		}
 	},
 	"mp-alipay": {
 		"usingComponents": true

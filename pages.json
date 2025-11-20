@@ -55,6 +55,20 @@
         "navigationBarTitleText": "",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/webview/webview",
+      "style": {
+        "navigationBarTitleText": "网页浏览",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/markdown-test/markdown-test",
+      "style": {
+        "navigationBarTitleText": "Markdown测试",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {

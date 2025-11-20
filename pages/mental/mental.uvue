@@ -69,7 +69,10 @@
               </template>
             </view>
           <view class="message-content">
-            <text class="message-text">{{ message.content }}</text>
+            <!-- 用户消息使用普通文本显示 -->
+            <text v-if="message.role === 'user'" class="message-text">{{ message.content }}</text>
+            <!-- 助手消息使用Markdown渲染 -->
+            <markdown-render v-else :content="message.content" />
             <text class="message-time">{{ formatTime(message.timestamp) }}</text>
           </view>
         </view>
@@ -151,11 +154,14 @@ import { ChatMessage, ChatSession } from '@/utils/api-service.uts'
 import sessionManager from '@/utils/session-manager.uts'
 import apiService from '@/utils/api-service.uts'
 import { t } from '@/utils/i18n/i18n.uts'
+import envConfig from '@/utils/env-config.uts'
+import MarkdownRender from '@/components/markdown-render.vue'
 
 // 响应式数据
 const showSessionList = ref(false)
 const inputMessage = ref('')
 const isLoading = ref(false)
+let sessionId: string | null = null
 const scrollTop = ref(0)
 const currentSessionId = ref<string | null>(null)
 const currentSessionTitle = ref('新对话')
@@ -205,18 +211,20 @@ const createNewSession = () => {
   currentSessionId.value = session.id
   currentSessionTitle.value = session.title
   currentMessages.value = []
+  sessionId = null // 重置sessionId
   loadSessions()
 }
 
 // 切换会话
-const switchSession = (sessionId: string) => {
-  if (sessionManager.setCurrentSession(sessionId, 'mental')) {
-    currentSessionId.value = sessionId
+const switchSession = (session_id: string) => {
+  if (sessionManager.setCurrentSession(session_id, 'mental')) {
+    currentSessionId.value = session_id
     const session = sessionManager.getCurrentSession('mental')
     if (session) {
       currentSessionTitle.value = session.title
       currentMessages.value = session.messages
     }
+    sessionId = null // 重置sessionId
     showSessionList.value = false
     scrollToBottom()
   }
@@ -268,31 +276,44 @@ const sendMessage = async () => {
   scrollToBottom()
   
   try {
-    // 调用API发送消息
-    const response = await apiService.sendMessage(message, currentSessionId.value)
+    // 调用API发送消息，第一轮对话不传递session_id
+    const requestData: any = {
+      text: message
+    };
     
-    if (response.code === 200 && response.data) {
-      const assistantMessage: ChatMessage = {
-        id: 'msg_' + Date.now(),
-        role: 'assistant',
-        content: response.data.content,
-        timestamp: Date.now()
-      }
-      
-      sessionManager.addMessageToCurrentSession(assistantMessage, 'mental')
-      currentMessages.value = [...currentMessages.value, assistantMessage]
-    } else {
-      // 模拟回复（开发阶段）
-      const mockMessage: ChatMessage = {
-        id: 'msg_' + Date.now(),
-        role: 'assistant',
-        content: `收到您的心理健康咨询："${message}"。我是WellMate心理健康助手，可以为您提供专业的心理支持和建议。`,
-        timestamp: Date.now()
-      }
-      
-      sessionManager.addMessageToCurrentSession(mockMessage, 'mental')
-      currentMessages.value = [...currentMessages.value, mockMessage]
+    // 如果存在会话ID，则添加到请求中
+    if (sessionId) {
+      requestData.session_id = sessionId;
     }
+    
+    const response = await apiService.sendMentalMessage(message, sessionId)
+    
+    // 更新会话ID
+    if (response && response.data && response.data.session_id) {
+      sessionId = response.data.session_id;
+    }
+    
+    // 检查响应结构并提取内容
+        let content = '';
+        if (response && response.data && response.data.response) {
+          content = response.data.response;
+        } else if (response && response.data && response.data.content) {
+          content = response.data.content;
+        } else if (response && response.content) {
+          content = response.content;
+        } else {
+          content = '感谢您的咨询，我已经收到了您的消息。';
+        }
+    
+    const assistantMessage: ChatMessage = {
+      id: 'msg_' + Date.now(),
+      role: 'assistant',
+      content: content,
+      timestamp: Date.now()
+    }
+    
+    sessionManager.addMessageToCurrentSession(assistantMessage, 'mental')
+    currentMessages.value = [...currentMessages.value, assistantMessage]
   } catch (error) {
     console.error('发送消息失败:', error)
     

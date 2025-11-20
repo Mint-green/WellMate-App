@@ -69,20 +69,44 @@ class ApiService {
   async sendHealthMessage(message: string, sessionId?: string): Promise<any> {
     try {
       const response = await uni.request({
-        url: 'http://47.113.206.45:5000/api/v1/health/physical/text',
+        url: `${this.baseURL}${this.healthAPIPrefix}/text`,
         method: 'POST',
         data: {
           message: message,
           session_id: sessionId
         },
         header: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${envConfig.getEnvConfig().ACCESS_TOKEN}`
         }
       })
       
       return response.data
     } catch (error) {
       console.error('发送健康消息失败:', error)
+      throw error
+    }
+  }
+  
+  // 心理健康文本对话接口（调用指定后端）
+  async sendMentalMessage(message: string, sessionId?: string): Promise<any> {
+    try {
+      const response = await uni.request({
+        url: `${this.baseURL}${this.mentalAPIPrefix}/chat`,
+        method: 'POST',
+        data: {
+          text: message,
+          session_id: sessionId
+        },
+        header: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${envConfig.ACCESS_TOKEN}`
+        }
+      })
+      
+      return response.data
+    } catch (error) {
+      console.error('发送心理健康消息失败:', error)
       throw error
     }
   }

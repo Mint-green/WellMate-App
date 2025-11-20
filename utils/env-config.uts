@@ -59,7 +59,7 @@ export const getEnvConfig = (): EnvConfig => {
 };
 
 // 访问令牌 - 当前为调试用的固定值
-export const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYTdndGQ1M2ItYzJiYi0xMWYwLWFhM2MtMDI0MmFjMTg0NzIzIiwidXNlcm5hbWUiOiJ0ZXN0cmVkIiwiZXhwIjoxNzYzNjA4MjExLCJpYXQiOjE3NjM1MjE4MTEsInR5cGUiOiJhY2Nlc3MifQ.DiUUiF3jxaWVPG0oQi3gLwBofMey3Tg0b1uGp2Fdyjo';
+export const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiYTdndGQ1M2ItYzJiYi0xMWYwLWFhM2MtMDI0MmFjMTg0NzIzIiwidXNlcm5hbWUiOiJ0ZXN0cmVkIiwiZXhwIjoxNzYzNzAwNzE3LCJpYXQiOjE3NjM2MTQzMTcsInR5cGUiOiJhY2Nlc3MifQ.cA2D-hnwDdSIUgnHXY6Z3PgvF2RBlZzZPMw4S0Qz4QI';
 
 export default {
   getEnvConfig,

@@ -313,6 +313,11 @@ const parsedElements = computed(() => {
 .markdown-content {
   display: flex;
   flex-direction: column;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  width: 100%;
 }
 
 .markdown-heading-1 {
@@ -362,6 +367,10 @@ const parsedElements = computed(() => {
   line-height: 1.6;
   margin: 10rpx 0;
   color: #333;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .markdown-bold {
@@ -394,6 +403,9 @@ const parsedElements = computed(() => {
   margin: 15rpx 0;
   white-space: pre-wrap;
   overflow-x: auto;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .markdown-blockquote {
@@ -427,6 +439,10 @@ const parsedElements = computed(() => {
   font-size: 28rpx;
   line-height: 1.5;
   color: #333;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .markdown-list-bullet {

@@ -39,7 +39,7 @@
       </view>
     </view>
     
-    <!-- 遮罩层 -->
+    <!-- Mask Layer -->
     <view 
       class="mask" 
       :class="{ active: showSessionList }"
@@ -167,7 +167,7 @@ const isLoading = ref(false)
 let sessionId: string | null = null
 const scrollTop = ref(0)
 const currentSessionId = ref<string | null>(null)
-const currentSessionTitle = ref('新对话')
+const currentSessionTitle = ref('New Chat')
 
 const sessions = ref<ChatSession[]>([])
 const currentMessages = ref<ChatMessage[]>([])
@@ -341,39 +341,106 @@ const startVoiceInput = () => {
   // 这里可以实现语音识别功能
   // 目前暂时使用模拟功能
   uni.showToast({
-    title: '语音输入功能开发中',
+    title: 'Voice input in development',
     icon: 'none',
     duration: 2000
   })
 }
 
-// 更多选项功能
+// More options feature
 const showMoreOptions = () => {
-  // 这里可以实现显示更多选项功能
-  // 目前暂时使用模拟功能
+  // Here you can implement the display more options feature
+  // Currently using simulated feature
   uni.showToast({
-    title: '更多选项功能开发中',
+    title: 'More options in development',
     icon: 'none',
     duration: 2000
   })
 }
 
-// 语音播放功能
-const playVoice = (text: string) => {
-  // 检查浏览器是否支持语音合成API
-  if ('speechSynthesis' in window) {
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = 'zh-CN'; // 设置语言为中文
-    speech.rate = 1; // 语速
-    speech.pitch = 1; // 音调
-    speech.volume = 1; // 音量
-    speechSynthesis.speak(speech);
+// 语音播放功能 - 支持两种方案切换
+const useNewTTSApi = ref(true); // true使用新接口，false使用原方案
+
+const playVoice = async (text: string) => {
+  if (useNewTTSApi.value) {
+    // 使用新的API接口
+    try {
+      // 显示加载提示
+      uni.showLoading({
+        title: 'Generating audio...'
+      });
+      
+      // 调用新的文本转语音接口
+      const response = await uni.request({
+        url: 'http://47.113.206.45:6001/text-to-speech',
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        data: {
+          input: text
+        },
+        responseType: 'arraybuffer' // 重要：指定响应类型为arraybuffer以接收音频数据
+      });
+      
+      uni.hideLoading();
+      
+      if (response.statusCode === 200) {
+        // 创建音频上下文播放音频
+        const innerAudioContext = uni.createInnerAudioContext();
+        // 将arraybuffer转换为base64
+        const base64 = arrayBufferToBase64(response.data);
+        innerAudioContext.src = `data:audio/wav;base64,${base64}`;
+        innerAudioContext.play();
+        
+        innerAudioContext.onError((res) => {
+          console.error('Audio playback failed:', res.errMsg);
+          uni.showToast({
+            title: 'Playback failed',
+            icon: 'none'
+          });
+        });
+      } else {
+        uni.showToast({
+          title: 'Audio generation failed',
+          icon: 'none'
+        });
+      }
+    } catch (error) {
+      uni.hideLoading();
+      console.error('TTS API call failed:', error);
+      uni.showToast({
+        title: 'API call failed',
+        icon: 'none'
+      });
+    }
   } else {
-    uni.showToast({
-      title: '当前设备不支持语音播放',
-      icon: 'none'
-    });
+    // 原方案：使用浏览器语音合成API
+    if ('speechSynthesis' in window) {
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = 'zh-CN'; // 设置语言为中文
+      speech.rate = 1; // 语速
+      speech.pitch = 1; // 音调
+      speech.volume = 1; // 音量
+      speechSynthesis.speak(speech);
+    } else {
+      uni.showToast({
+        title: 'Device does not support voice playback',
+        icon: 'none'
+      });
+    }
   }
+}
+
+// ArrayBuffer转Base64
+const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
 }
 
 // 滚动到底部
@@ -383,25 +450,35 @@ const scrollToBottom = () => {
   }, 100)
 }
 
+// 切换TTS方案
+const toggleTTS = () => {
+  useNewTTSApi.value = !useNewTTSApi.value
+  uni.showToast({
+    title: `Switched to ${useNewTTSApi.value ? 'new' : 'old'} API`,
+    icon: 'none'
+  })
+}
+
 // 滚动事件
 const onScroll = (e: any) => {
   // 可以在这里实现滚动加载更多消息
 }
 
-// 格式化时间
+// Format time
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp)
   const now = new Date()
   const diff = now.getTime() - timestamp
   
   if (diff < 60 * 1000) {
-    return '刚刚'
+    return 'Just now'
   } else if (diff < 60 * 60 * 1000) {
-    return Math.floor(diff / (60 * 1000)) + '分钟前'
+    return Math.floor(diff / (60 * 1000)) + ' mins ago'
   } else if (diff < 24 * 60 * 60 * 1000) {
-    return Math.floor(diff / (60 * 60 * 1000)) + '小时前'
+    return Math.floor(diff / (60 * 60 * 1000)) + ' hours ago'
   } else {
-    return date.getMonth() + 1 + '月' + date.getDate() + '日'
+    // Format as MM/DD
+    return (date.getMonth() + 1) + '/' + date.getDate()
   }
 }
 
@@ -456,6 +533,19 @@ const navigateToPage = (url) => {
   border-bottom: 1rpx solid rgba(240, 240, 240, 0.5);
   backdrop-filter: blur(10rpx);
   z-index: 999;
+}
+
+.tts-toggle {
+  position: absolute;
+  top: 20rpx;
+  right: 100rpx;
+  background: #4facfe;
+  color: white;
+  border: none;
+  border-radius: 20rpx;
+  padding: 10rpx 20rpx;
+  font-size: 24rpx;
+  z-index: 1000;
 }
 
 .header-title {
@@ -675,6 +765,9 @@ const navigateToPage = (url) => {
   padding: 20rpx 25rpx;
   position: relative;
   word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .message.user .message-content {
@@ -691,6 +784,10 @@ const navigateToPage = (url) => {
 
 .assistant-message-bubble {
   width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .message-text {

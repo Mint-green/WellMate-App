@@ -156,6 +156,16 @@ import { ChatMessage, ChatSession } from '@/utils/api-service.uts'
 import sessionManager from '@/utils/session-manager.uts'
 import apiService from '@/utils/api-service.uts'
 import { t } from '@/utils/i18n/i18n.uts'
+import envConfig from '@/utils/env-config.uts'
+
+// 访问令牌 - 从环境配置中获取
+const ACCESS_TOKEN = envConfig.ACCESS_TOKEN
+
+// API配置 - 从环境配置中获取
+const apiConfig = envConfig.getEnvConfig()
+
+// 会话ID，初始为空，会在首次对话后设置
+let sessionId: string | null = null
 
 // 响应式数据
 const showSessionList = ref(false)
@@ -211,6 +221,9 @@ const createNewSession = () => {
   currentSessionTitle.value = session.title
   currentMessages.value = []
   loadSessions()
+  
+  // 清除API会话ID，以便开始新的对话
+  sessionId = null
 }
 
 // 切换会话
@@ -264,6 +277,7 @@ const sendMessage = async () => {
     content: message,
     timestamp: Date.now()
   }
+  console.log('userMessage', userMessage)
   
   sessionManager.addMessageToCurrentSession(userMessage, 'health')
   currentMessages.value = [...currentMessages.value, userMessage]
@@ -273,30 +287,57 @@ const sendMessage = async () => {
   scrollToBottom()
   
   try {
-    // 调用API发送消息
-    const response = await apiService.sendMessage(message, currentSessionId.value)
+    // 调用新的API发送消息
+    const requestData: any = {
+      text: message
+    };
     
-    if (response.code === 200 && response.data) {
+    // 如果存在会话ID，则添加到请求中
+    if (sessionId) {
+      requestData.session_id = sessionId;
+    }
+    
+    const response = await uni.request({
+      url: `${apiConfig.baseURL}${apiConfig.healthAPIPrefix}/chat`,
+      method: 'POST',
+      data: requestData,
+      header: {
+        'Authorization': `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    // 处理响应
+    if (response.statusCode === 200 && response.data) {
+      const responseData = response.data as any;
+      console.log('responseData', responseData)
+      
+      // 更新会话ID
+      if (responseData.data && responseData.data.session_id) {
+        sessionId = responseData.data.session_id;
+      }
+      
       const assistantMessage: ChatMessage = {
         id: 'msg_' + Date.now(),
         role: 'assistant',
-        content: response.data.content,
+        content: responseData.data.response,
         timestamp: Date.now()
       }
       
       sessionManager.addMessageToCurrentSession(assistantMessage, 'health')
       currentMessages.value = [...currentMessages.value, assistantMessage]
     } else {
-      // 模拟回复（开发阶段）
-      const mockMessage: ChatMessage = {
+      // 错误处理
+      const errorMessage: ChatMessage = {
         id: 'msg_' + Date.now(),
         role: 'assistant',
-        content: `收到您的生理健康咨询："${message}"。我是WellMate生理健康助手，可以为您提供专业的健康建议和分析。`,
+        content: '抱歉，暂时无法连接到服务。请检查网络连接后重试。',
         timestamp: Date.now()
       }
+
       
-      sessionManager.addMessageToCurrentSession(mockMessage, 'health')
-      currentMessages.value = [...currentMessages.value, mockMessage]
+      sessionManager.addMessageToCurrentSession(errorMessage, 'health')
+      currentMessages.value = [...currentMessages.value, errorMessage]
     }
   } catch (error) {
     console.error('发送消息失败:', error)

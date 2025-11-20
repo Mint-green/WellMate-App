@@ -3,6 +3,8 @@
  * 独立封装后端接口调用，便于调整实际调用的后端
  */
 
+import envConfig from './env-config.uts'
+
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
@@ -36,8 +38,10 @@ export interface ApiResponse<T> {
 }
 
 class ApiService {
-  // 后端API基础URL - 可在此处修改实际后端地址
-  private baseURL = 'https://api.wellmate.com/v1'
+  // 后端API基础URL - 从环境配置中获取
+  private baseURL = envConfig.getEnvConfig().baseURL
+  private healthAPIPrefix = envConfig.getEnvConfig().healthAPIPrefix
+  private mentalAPIPrefix = envConfig.getEnvConfig().mentalAPIPrefix
   
   // AI对话相关接口
   async sendMessage(message: string, sessionId?: string): Promise<ApiResponse<ChatMessage>> {
